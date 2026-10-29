@@ -10,6 +10,12 @@
     "directory": "./out",
     "binding": "ASSETS"
   },
+  "kv_namespaces": [
+    {
+      "binding": "SITE_KV",
+      "id": "2fda7a3ce4774dbab46f743ba0132543"
+    }
+  ],
   "build": {
     "command": "npm run build"
   }
