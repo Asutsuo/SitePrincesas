@@ -166,7 +166,7 @@ export default function AdminPage() {
           customColorHex: chosenHex,
         }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as any;
       if (data.success) {
         showToast("success", "Cor oficial do site salva com sucesso!");
         await refreshData();
@@ -216,7 +216,7 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pin: pinToUse, edition: newEdition }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as any;
       if (data.success) {
         showToast(
           "success",
@@ -281,7 +281,7 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pin: pinToUse, post: newPost }),
       });
-      const data = await res.json();
+      const data = (await res.json()) as any;
       if (data.success) {
         showToast("success", "Reflexão publicada no site com sucesso!");
         await refreshData();
@@ -319,7 +319,7 @@ export default function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      const data = await res.json();
+      const data = (await res.json()) as any;
       if (data.success) {
         if (settingsForm.newPin && settingsForm.newPin.trim().length >= 4) {
           setActivePin(settingsForm.newPin.trim());

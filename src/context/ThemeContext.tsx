@@ -137,7 +137,7 @@ export function ThemeProvider({
     setIsLoading(true);
     try {
       const res = await fetch("/api/data", { cache: "no-store" });
-      const json = await res.json();
+      const json = (await res.json()) as any;
       if (json.success && json.data) {
         setSiteData(json.data);
         if (json.data.settings?.currentThemeKey) {
