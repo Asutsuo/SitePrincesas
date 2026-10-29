@@ -136,32 +136,12 @@ export function ThemeProvider({
   const refreshData = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/data", { cache: "no-store" });
-      const json = (await res.json()) as any;
-      if (json.success && json.data) {
-        setSiteData(json.data);
-        if (json.data.settings?.currentThemeKey) {
-          setThemeKeyState(json.data.settings.currentThemeKey);
-          localStorage.setItem(
-            "princesas_theme_key",
-            json.data.settings.currentThemeKey,
-          );
-        }
-        if (json.data.settings?.customColorHex) {
-          setCustomHexState(json.data.settings.customColorHex);
-          localStorage.setItem(
-            "princesas_custom_hex",
-            json.data.settings.customColorHex,
-          );
-        }
-        if (json.data.settings?.activeEditionYear) {
-          setActiveEditionYearState(json.data.settings.activeEditionYear);
-          localStorage.setItem(
-            "princesas_active_year",
-            String(json.data.settings.activeEditionYear),
-          );
-        }
-      }
+      const savedTheme = localStorage.getItem("princesas_theme_key");
+      const savedCustom = localStorage.getItem("princesas_custom_hex");
+      const savedYear = localStorage.getItem("princesas_active_year");
+      if (savedTheme) setThemeKeyState(savedTheme);
+      if (savedCustom) setCustomHexState(savedCustom);
+      if (savedYear) setActiveEditionYearState(parseInt(savedYear, 10));
     } catch (e) {
       console.error("Failed to refresh site data:", e);
     } finally {

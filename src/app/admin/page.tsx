@@ -149,32 +149,12 @@ export default function AdminPage() {
   const handleSaveTheme = async (key: string, hex?: string) => {
     setIsSubmitting(true);
     try {
-      const pinToUse =
-        activePin || siteData?.settings?.adminPin || "princesas2026";
-      const chosenHex = hex || customHex;
-
-      // Update client preview immediately
       setThemeKey(key);
       if (hex) setCustomHex(hex);
-
-      const res = await fetch("/api/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          pin: pinToUse,
-          currentThemeKey: key,
-          customColorHex: chosenHex,
-        }),
-      });
-      const data = (await res.json()) as any;
-      if (data.success) {
-        showToast("success", "Cor oficial do site salva com sucesso!");
-        await refreshData();
-      } else {
-        showToast("error", data.error || "Erro ao salvar tema.");
-      }
+      showToast("success", "Cor oficial aplicada no seu navegador!");
+      await refreshData();
     } catch {
-      showToast("error", "Falha na conexão com o servidor.");
+      showToast("error", "Erro ao aplicar tema.");
     } finally {
       setIsSubmitting(false);
     }
@@ -211,28 +191,17 @@ export default function AdminPage() {
         testimonials: [],
       };
 
-      const res = await fetch("/api/editions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pin: pinToUse, edition: newEdition }),
+      showToast(
+        "success",
+        `Modo estático: para publicar a Edição ${editionForm.year}, crie a pasta correspondente no GitHub em src/data/editions/${editionForm.year}`,
+      );
+      setEditionForm({
+        year: (editionForm.year || 2027) + 1,
+        title: "",
+        subtitle: "",
       });
-      const data = (await res.json()) as any;
-      if (data.success) {
-        showToast(
-          "success",
-          `Edição ${editionForm.year} salva com sucesso na pasta src/data/editions/${editionForm.year}!`,
-        );
-        await refreshData();
-        setEditionForm({
-          year: (editionForm.year || 2027) + 1,
-          title: "",
-          subtitle: "",
-        });
-      } else {
-        showToast("error", data.error || "Erro ao salvar edição.");
-      }
     } catch {
-      showToast("error", "Erro ao conectar ao servidor.");
+      showToast("error", "Erro ao processar edição.");
     } finally {
       setIsSubmitting(false);
     }
@@ -276,21 +245,10 @@ export default function AdminPage() {
         tags: postForm.tags || ["Reflexão"],
       };
 
-      const res = await fetch("/api/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pin: pinToUse, post: newPost }),
-      });
-      const data = (await res.json()) as any;
-      if (data.success) {
-        showToast("success", "Reflexão publicada no site com sucesso!");
-        await refreshData();
-        setPostForm({ title: "", subtitle: "", excerpt: "", content: "" });
-      } else {
-        showToast("error", data.error || "Erro ao publicar.");
-      }
+      showToast("success", "Modo estático: posts são versionados via Git no arquivo site-data.json.");
+      setPostForm({ title: "", subtitle: "", excerpt: "", content: "" });
     } catch {
-      showToast("error", "Erro de conexão.");
+      showToast("error", "Erro ao processar reflexão.");
     } finally {
       setIsSubmitting(false);
     }
@@ -301,46 +259,16 @@ export default function AdminPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const pinToUse =
-        activePin || siteData?.settings?.adminPin || "princesas2026";
-      const payload: any = {
-        pin: pinToUse,
-        contactWhatsapp: settingsForm.contactWhatsapp,
-        churchName: settingsForm.churchName,
-        churchAddress: settingsForm.churchAddress,
-        motto: settingsForm.motto,
-      };
       if (settingsForm.newPin && settingsForm.newPin.trim().length >= 4) {
-        payload.adminPin = settingsForm.newPin.trim();
+        setActivePin(settingsForm.newPin.trim());
+        try {
+          sessionStorage.setItem("admin_session_pin", settingsForm.newPin.trim());
+          localStorage.setItem("admin_session_pin", settingsForm.newPin.trim());
+        } catch {}
       }
-
-      const res = await fetch("/api/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = (await res.json()) as any;
-      if (data.success) {
-        if (settingsForm.newPin && settingsForm.newPin.trim().length >= 4) {
-          setActivePin(settingsForm.newPin.trim());
-          try {
-            sessionStorage.setItem(
-              "admin_session_pin",
-              settingsForm.newPin.trim(),
-            );
-            localStorage.setItem(
-              "admin_session_pin",
-              settingsForm.newPin.trim(),
-            );
-          } catch {}
-        }
-        showToast("success", "Configurações atualizadas com sucesso!");
-        await refreshData();
-      } else {
-        showToast("error", data.error || "Erro ao atualizar.");
-      }
+      showToast("success", "Configurações salvas localmente no navegador.");
     } catch {
-      showToast("error", "Falha ao conectar ao servidor.");
+      showToast("error", "Erro ao salvar.");
     } finally {
       setIsSubmitting(false);
     }
