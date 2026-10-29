@@ -1,0 +1,440 @@
+{
+  "settings": {
+    "activeEditionYear": 2026,
+    "currentThemeKey": "blue",
+    "customColorHex": "#1d5b96",
+    "siteName": "Chá das Princesas",
+    "tagline": "Um encontro nobre com o Pai Celestial",
+    "motto": "Cada detalhe importa!",
+    "contactWhatsapp": "5511999999999",
+    "instagramUrl": "https://instagram.com",
+    "churchName": "Igreja Evangélica",
+    "churchAddress": "Salão Real da Igreja",
+    "adminPin": "princesas2026"
+  },
+  "story": {
+    "founder": "Edinea Gomes Barbalho",
+    "partner": "Matheus Barbalho",
+    "genesis": "O Chá das Princesas nasceu no coração de Deus no finalzinho de 2024, quando Edinea fazia suas orações de fim de ano prometendo focar em seus próprios projetos profissionais e economias. Naquele instante de quebrantamento, ela ouviu a voz de Deus em seu espírito: 'Primeiro os projetos Dele, depois os teus'.",
+    "revelation": "Ao indagar a Deus sobre quais eram esses projetos, a resposta veio clara: existem meninas que carregam dores emocionais profundas — depressão, ansiedade, culpa, complexo de inferioridade e traumas que pareciam espirituais, mas eram pancadas emocionais silenciosas. O propósito do Senhor era resgatá-las e oferecer um ambiente onde elas se sentissem verdadeiramente preciosas, amadas e filhas do Rei.",
+    "motto": "Cada detalhe importa!",
+    "faithPrinciple": "O Senhor ordenou que o evento não dependesse de pedidos de doações nem empréstimos. Teria que custar da própria fé e dedicação de Edinea, operando com excelência e recursos patrocinados pelo próprio Rei.",
+    "dreamDescription": "Em um momento de planejamento lento, Edinea teve um sonho profético onde via uma família necessitada de alimento e um saquinho de leite furado esvaziando rapidamente. Despertou com o senso de urgência: o banquete da palavra precisava acontecer sem demora!",
+    "helpersDescription": "Com o apoio do enteado Matheus (responsável pelas listas e minúcias) e de uma equipe fervorosa de ajudantes e intercessoras carinhosamente chamadas de 'Mordomas', cada xícara, guardanapo e detalhe foi preparado com reverência e amor."
+  },
+  "editions": [
+    {
+      "id": "2026",
+      "year": 2026,
+      "number": "2ª Edição",
+      "title": "Herdeiras do Reino",
+      "subtitle": "Filhas Amadas do Rei Celestial",
+      "bibleTheme": {
+        "verse": "Vós, porém, sois geração eleita, sacerdócio real, nação santa, povo de propriedade exclusiva de Deus, a fim de proclamardes as virtudes daquele que vos chamou das trevas para a sua maravilhosa luz.",
+        "reference": "1 Pedro 2:9"
+      },
+      "themeColor": "Azul Celestial",
+      "themePaletteKey": "blue",
+      "date": "21 de Fevereiro de 2026",
+      "location": "Salão Real da Igreja",
+      "status": "current",
+      "description": "A 2ª Edição do Chá das Princesas trouxe a tonalidade Azul Celestial para celebrar nossa filiação e cidadania no Reino de Deus. Um encontro inesquecível onde mulheres foram acolhidas, curadas de feridas emocionais e coroadas com o favor do Pai Celestial.",
+      "logoImage": "/assets/edicoes/2026/logo-2026.png",
+      "bannerImage": "/assets/edicoes/2026/logo-2026.png",
+      "videoUrl": "/assets/edicoes/2026/tour-mesa-real-2026.mp4",
+      "videoPoster": "/assets/edicoes/2026/tour-mesa-real-poster.jpg",
+      "videoCaption": "Tour pela Mesa Real: Cada detalhe importa nos preparativos para acolher as princesas",
+      "rules": [
+        "Coluna reta, postura digna de quem descansa no Rei",
+        "Não colocar os cotovelos sobre a mesa",
+        "Usar o guardanapo dobrado com gentileza sobre o colo ao se servir",
+        "Xícara delicadamente posicionada no lado direito",
+        "Permaneça assentada até a conclusão do banquete da Palavra",
+        "Silêncio reverente durante a ministração para que Deus fale ao coração",
+        "Necessitando ir ao toalete, acione com carinho a sua Dama de Companhia",
+        "Se tiver sede, as Mordomas trarão água fresca até você",
+        "Alimente-se com tranquilidade e paz de espírito",
+        "Se sentir vontade de chorar, fique à vontade! Suas lágrimas são preciosas para Deus"
+      ],
+      "itinerary": [
+        {
+          "step": 1,
+          "title": "O Toque da Trombeta & Recepção Real",
+          "subtitle": "Boas-vindas e cabideiro das bagagens",
+          "description": "Ao som solene de trombetas, as damas de companhia e princesas são recebidas no salão. Na entrada, são convidadas a deixar suas bolsas e fardos no cabideiro real.",
+          "song": "Toque Real de Trombetas"
+        },
+        {
+          "step": 2,
+          "title": "Acolhimento da Mordoma Palestrante",
+          "subtitle": "O convite ao descanso de Mateus 11:28",
+          "description": "Saudação amorosa onde cada princesa ouve sobre seu inestimável valor para o Rei Jesus.",
+          "song": "Instrumental Suave"
+        },
+        {
+          "step": 3,
+          "title": "A Mesa do Banquete & Manual das Princesas",
+          "subtitle": "Etiqueta, reverência e acolhimento emocional",
+          "description": "Leitura em conjunto do Manual das Princesas, com ênfase especial na liberdade emocional e no carinho com que a mesa foi posta.",
+          "song": "Louvor de Paz"
+        },
+        {
+          "step": 4,
+          "title": "Dinâmica das Pedras & Abertura do Coração",
+          "subtitle": "Descarregando o peso dos ombros",
+          "description": "Momento de desabafo onde dores secretas são entregues nas mãos do Senhor Jesus, que tomou sobre si todos os nossos fardos.",
+          "song": "Lindo Momento (Julliany Souza)"
+        },
+        {
+          "step": 5,
+          "title": "Espelho da Graça: Quem o Rei Diz Que Eu Sou",
+          "subtitle": "Decretos de cura, filiação e redenção",
+          "description": "Cada mulher olha para o espelho, quebra palavras que feriram sua autoestima e declara sua real identidade como filha e herdeira do Altíssimo.",
+          "song": "Essa tal de Rejeição (Fernanda Brum)"
+        },
+        {
+          "step": 6,
+          "title": "Consagração, Oração & Banquete Festivo",
+          "subtitle": "Unção de cura e comunhão regada a chá",
+          "description": "As mordomas intercessoras ministram oração individual com unção e cânticos de adoração, seguido por uma alegre comunhão à mesa.",
+          "song": "Ministração Profética"
+        }
+      ],
+      "photos": [
+        {
+          "url": "/assets/edicoes/2026/coroa-real-tiara.jpg",
+          "caption": "A coroa real reluzente e o laço azul celeste: símbolos da identidade de filhas do Rei Celestial.",
+          "category": "ambiente"
+        },
+        {
+          "url": "/assets/edicoes/2026/marcador-lugar-taca-azul.jpg",
+          "caption": "Marcador de lugar com laço azul celeste e taça de cristal lapidado (21/02/2026).",
+          "category": "ambiente"
+        },
+        {
+          "url": "/assets/edicoes/2026/detalhe-lugar-personalizado.jpg",
+          "caption": "Lugar personalizado com versículo bíblico, prato em vidro trabalhado e colher dourada de coração.",
+          "category": "ambiente"
+        },
+        {
+          "url": "/assets/edicoes/2026/mesa-real-panoramica.jpg",
+          "caption": "A mesa real decorada em azul celeste com balões transparentes e arranjos florais.",
+          "category": "ambiente"
+        },
+        {
+          "url": "/assets/edicoes/2026/mesa-posta-cortinas-voil.jpg",
+          "caption": "Mesa posta sob a varanda com cortinas de voil brancas e vista para o jardim.",
+          "category": "ambiente"
+        },
+        {
+          "url": "/assets/edicoes/2026/mesa-banquete-perspectiva.jpg",
+          "caption": "Perspectiva da grande mesa: taças azuis, louças finas e cada detalhe preparado com excelência.",
+          "category": "ambiente"
+        },
+        {
+          "url": "/assets/edicoes/2026/princesa-mesa-banquete.jpg",
+          "caption": "A princesa à mesa do banquete com o laço azul celeste, contemplando o salão real.",
+          "category": "ambiente"
+        },
+        {
+          "url": "/assets/edicoes/2026/princesas-trajes-celestes.jpg",
+          "caption": "Princesas radiantes com seus trajes em tom azul celeste desfrutando do encontro real.",
+          "category": "momentos"
+        },
+        {
+          "url": "/assets/edicoes/2026/momento-cura-abraco.jpg",
+          "caption": "Lágrimas de cura e alívio emocional: o acolhimento afetuoso que restaura a alma.",
+          "category": "dinamica"
+        },
+        {
+          "url": "/assets/edicoes/2026/ministracao-da-palavra.jpg",
+          "caption": "Ministração profética da Palavra e cânticos de adoração tocando os corações.",
+          "category": "momentos"
+        },
+        {
+          "url": "/assets/edicoes/2026/edinea-matheus-organizacao.jpg",
+          "caption": "Edinea Gomes Barbalho, Matheus Barbalho e equipe celebrando a realização da 2ª Edição.",
+          "category": "momentos"
+        },
+        {
+          "url": "/assets/edicoes/2026/apoio-pastoral-mesa-real.jpg",
+          "caption": "Apoio e bênção pastoral ao lado da mesa do banquete real preparado para as princesas.",
+          "category": "momentos"
+        },
+        {
+          "url": "/assets/edicoes/2026/edinea-e-mordomas-alegria.jpg",
+          "caption": "Edinea e as dedicadas mordomas com sorrisos de gratidão pela graça do evento.",
+          "category": "momentos"
+        },
+        {
+          "url": "/assets/edicoes/2026/edinea-e-matheus-comemoracao.jpg",
+          "caption": "A alegria contagiante dos idealizadores Edinea e Matheus com a missão cumprida.",
+          "category": "momentos"
+        },
+        {
+          "url": "/assets/edicoes/2026/mordomas-intercessoras-jardim.jpg",
+          "caption": "Mordomas intercessoras que sustentaram o banquete com amor e intercessão contínua.",
+          "category": "momentos"
+        },
+        {
+          "url": "/assets/edicoes/2026/gratidao-apos-evento.jpg",
+          "caption": "Comunhão e alegria pura após uma jornada emocionante de ministração e cura.",
+          "category": "momentos"
+        }
+      ],
+      "testimonials": [
+        {
+          "id": "t-2026-camila",
+          "name": "Princesa Camila",
+          "role": "Participante da 2ª Edição (2026)",
+          "quote": "Me senti importante me senti alguém porque eu sofro muito bullying na escola.\n\nEu me sinto muito linda me senti acolhida me senti muito bem.",
+          "photoUrl": "/assets/edicoes/2026/feedback_camila.jpeg",
+          "editionYear": 2026,
+          "tag": "Acolhimento & Superação do Bullying"
+        },
+        {
+          "id": "t-2026-viviane",
+          "name": "Princesa Viviane",
+          "role": "Participante da 2ª Edição (2026)",
+          "quote": "Então eu amei o chá das princesas, as palestras, palavras levanta a nossa autoestima, nosso psicológico é trabalhado, tudo perfeito e lindo, foi algo muito gratificante na minha vida 🙏🙌",
+          "photoUrl": "/assets/edicoes/2026/feedback_viviane.jpeg",
+          "editionYear": 2026,
+          "tag": "Autoestima & Cuidado Emocional"
+        },
+        {
+          "id": "t-2026-raquel",
+          "name": "Princesa Raquel",
+          "role": "Participante da 2ª Edição (2026)",
+          "quote": "Olá, passando para deixar meu Feedback sobre o chá das princesas!! Que dia espetacular, me sentir única e como nunca havia me sentindo antes. Que Deus derrame chuvas de benções sobre as pessoas que Deus escolheu ali para tratar de nós mulheres que precisava deste momento único. Gratidão! 🙏❤️",
+          "photoUrl": "/assets/edicoes/2026/feedback_raquel.jpeg",
+          "editionYear": 2026,
+          "tag": "Sentir-se Única & Cura Interior"
+        },
+        {
+          "id": "t-2026-suely",
+          "name": "Princesa Suely",
+          "role": "Participante da 2ª Edição (2026)",
+          "quote": "O chá das princesas foi muito bom, amei tudo do começo ao fim, espero poder participar outras vezes, me fez muito bem espiritualmente, gratidão a Deus, e a vc Ednéia, por ter me convidado.",
+          "photoUrl": "/assets/edicoes/2026/feedback_suely.jpeg",
+          "editionYear": 2026,
+          "tag": "Renovação Espiritual & Gratidão"
+        },
+        {
+          "id": "t-2026-samara",
+          "name": "Princesa Samara",
+          "role": "Participante da 2ª Edição (2026)",
+          "quote": "Boa tarde! Amei o Chá das Princesas, foi tudo lindo e muito bem organizado. Decoração impecável, ambiente super acolhedor e cheio de carinho em cada detalhe. Foi uma tarde mágica e especial, me senti uma verdadeira princesa. Super indico! ✨👑",
+          "photoUrl": "/assets/edicoes/2026/feedback_samara.jpeg",
+          "editionYear": 2026,
+          "tag": "Carinho em Cada Detalhe"
+        },
+        {
+          "id": "t-2026-flavia",
+          "name": "Princesa Flávia",
+          "role": "Participante da 2ª Edição (2026)",
+          "quote": "Foi tudo perfeito, só tenho que agradecer por tudo. Tudo feito com muito amor e capricho. O momento de dicas de beleza e autocuidado foi excelente!! Parabéns para toda equipe, foi tudo realmente perfeito. 👏🥰",
+          "photoUrl": "/assets/edicoes/2026/feedback.jpeg",
+          "editionYear": 2026,
+          "tag": "Autocuidado & Capricho"
+        }
+      ]
+    },
+    {
+      "id": "2025",
+      "year": 2025,
+      "number": "1ª Edição",
+      "title": "A Mochila",
+      "subtitle": "Vinde a Mim os Cansados e Sobrecarregados",
+      "bibleTheme": {
+        "verse": "Vinde a mim, todos os que estais cansados e sobrecarregados, e eu vos aliviarei. Tomai sobre vós o meu jugo e aprendei de mim, porque sou manso e humilde de coração; e achareis descanso para a vossa alma. Porque o meu jugo é suave, e o meu fardo é leve.",
+        "reference": "Mateus 11:28-30"
+      },
+      "themeColor": "Lilás Imperial",
+      "themePaletteKey": "lilac",
+      "date": "15 de Fevereiro de 2025",
+      "location": "Salão Real da Igreja",
+      "status": "past",
+      "description": "O marco inaugural do Chá das Princesas. Para fugir do tradicional rosa infantil, foi escolhido o lilás suave para simbolizar honra, cura e restauração. O tema 'A Mochila' trouxe alívio espiritual e emocional para fardos pesados que as jovens carregavam em silêncio.",
+      "bannerImage": "/assets/edicoes/2025/convite-2025.png",
+      "rules": [
+        "Coluna reta, não deitar na cabeceira da cadeira",
+        "Não colocar os cotovelos sobre a mesa",
+        "Use o guardanapo de forma correta (dobrado sobre o colo)",
+        "Coloque a xícara no lado direito",
+        "Não se levantar antes que termine o chá",
+        "Não conversar durante o chá para prestar atenção na Palavra",
+        "Se for muito necessário ir ao banheiro, peça à Dama de Companhia",
+        "Se der sede, solicitar à Dama de Companhia que buscará a água",
+        "O que estiver à mesa pode comer silenciosamente sem atrapalhar a ministração",
+        "Se sentir vontade de chorar, fique à vontade!"
+      ],
+      "itinerary": [
+        {
+          "step": 1,
+          "title": "Som de Trombeta & Desapego",
+          "subtitle": "Entrada das princesas e cabideiro",
+          "description": "Tocadas as trombetas anunciando a chegada, as princesas deixaram bolsas e pertences no cabideiro da entrada como ato simbólico de desapego dos fardos.",
+          "song": "Trombeta Real"
+        },
+        {
+          "step": 2,
+          "title": "Acolhimento & Palavra Inicial",
+          "subtitle": "A importância de colocar os pesos no Senhor",
+          "description": "Apresentação da mordoma palestrante, demonstrando o carinho de Deus por cada uma e apontando para o versículo de Mateus 11:28 nos caminhos de mesa.",
+          "song": "Instrumental"
+        },
+        {
+          "step": 3,
+          "title": "Manual das Princesas",
+          "subtitle": "Etiqueta e acolhimento à mesa",
+          "description": "Leitura do manual impresso entregue em papel especial na entrada do salão real, culminando na liberdade para chorar.",
+          "song": "Fundo musical suave"
+        },
+        {
+          "step": 4,
+          "title": "Dinâmica da Mochila",
+          "subtitle": "Retirando as pedras pesadas",
+          "description": "Pedras com inscrições de depressão, culpa, bullying e fardos colocados na mochila, pesados nos ombros e depois lançados fora pela fé.",
+          "song": "Lindo Momento (Julliany Souza)"
+        },
+        {
+          "step": 5,
+          "title": "Dinâmica Espelho, Espelho Meu!",
+          "subtitle": "Profetizando cura e filiação real",
+          "description": "Com espelhos nas mãos, cada princesa proclamou: 'Eu sou livre, eu sou filha do Rei, meu Pai segura minha mão!'.",
+          "song": "Essa tal de Rejeição (Fernanda Brum)"
+        },
+        {
+          "step": 6,
+          "title": "Momento Oração e Unção",
+          "subtitle": "Imposição de mãos e louvor profético",
+          "description": "Mordomas alinhadas orando por cada jovem com unção, e cânticos ministrados pela cantora Jéssica.",
+          "song": "Canções de Sara Beatriz"
+        }
+      ],
+      "photos": [
+        {
+          "url": "/assets/edicoes/2025/convite-2025.png",
+          "caption": "A Mochila: Emblema temático da 1ª Edição simbolizando os fardos entregues ao Senhor Jesus.",
+          "category": "convite"
+        },
+        {
+          "url": "/assets/edicoes/2025/entrada-princesas.jpg",
+          "caption": "A acolhida régia das jovens e suas damas de companhia na entrada do castelo.",
+          "category": "momentos"
+        },
+        {
+          "url": "/assets/edicoes/2025/mesa-real.jpg",
+          "caption": "A mesa real ricamente posta com louças, xícaras e o caminho com a Palavra de Deus.",
+          "category": "ambiente"
+        },
+        {
+          "url": "/assets/edicoes/2025/manual-impresso.jpg",
+          "caption": "O Manual das Princesas impresso em papel nobre entregue a cada participante.",
+          "category": "ambiente"
+        },
+        {
+          "url": "/assets/edicoes/2025/dinamica-espelho.jpg",
+          "caption": "A profunda dinâmica do espelho: quebrando palavras de rejeição e declarando vida.",
+          "category": "dinamica"
+        },
+        {
+          "url": "/assets/edicoes/2025/edinea-palestrante.jpg",
+          "caption": "Edinea Gomes Barbalho ministrando a Palavra do Rei aos corações.",
+          "category": "momentos"
+        },
+        {
+          "url": "/assets/edicoes/2025/mordomas-intercessoras.jpg",
+          "caption": "As fiéis mordomas intercessoras que sustentaram o evento em oração.",
+          "category": "momentos"
+        },
+        {
+          "url": "/assets/edicoes/2025/grupo-princesas-sorrindo.jpg",
+          "caption": "O resultado final: sorrisos restaurados de princesas que antes não sorriam.",
+          "category": "momentos"
+        }
+      ],
+      "testimonials": [
+        {
+          "id": "t-marcelly",
+          "name": "Princesa Marcelly",
+          "role": "Participante da 1ª Edição (2025)",
+          "quote": "Achei importante, também é muito importante pra quem tivesse depressão, ensinou muitas coisas sobre o valor que temos para Deus e que somos todas amadas por Ele 🙏🏻 Eu gostei de todas as dinâmicas, também teve a dinâmica do espelho que foi muito lindo. ❤️ O chá das princesas foi lindo 🙏🏻",
+          "photoUrl": "/assets/edicoes/2025/feedback-marcelly.jpg",
+          "editionYear": 2025,
+          "tag": "Valor para Deus & Dinâmica do Espelho"
+        },
+        {
+          "id": "t-laura",
+          "name": "Princesa Laura",
+          "role": "Participante da 1ª Edição (2025)",
+          "quote": "O momento mais marcante foi quando eu chorei do momento da palavra de Deus, oq acrescentou em minha foi q eu aprendi a tocar bateria, aprendi muitas plantadas de Deus, fiz nova amizades e me sentir encolhida e oq me chamou mais atenção foi a Jessica cantando louvor, sobre a palestrante, eu gostei e eu admiro uma pessoa que expira a ser correta e uma pessoa acolhedora e admirável como ser humano aaaaahhhhh.......poxa ñ tem nem uma palavra pra explicar tão incrível que é. Sobre a dinâmica mais impactante foi a da pedra onde escrevia as coisa ruim na pedra e colocava na mochila como q fosse peso q a gente carregava com a gente. ❤️",
+          "photoUrl": "/assets/edicoes/2025/feedback-laura.jpg",
+          "editionYear": 2025,
+          "tag": "Lágrimas de Cura & Dinâmica da Pedra"
+        },
+        {
+          "id": "t-emilly",
+          "name": "Princesa Emilly",
+          "role": "Participante da 1ª Edição (2025)",
+          "quote": "Oi aqui é a Emilly!! Eu amei o evento e tudo o que teve lá foi muito bom, Eu acho que seria legal se no evento fazer uma brincadeira ou algo do tipo. que tenha haver com a palestra . Gostei da dinâmica da mochila .",
+          "photoUrl": "/assets/edicoes/2025/feedback-emilly.jpg",
+          "editionYear": 2025,
+          "tag": "Dinâmica da Mochila"
+        },
+        {
+          "id": "t-cibelly",
+          "name": "Princesa Cibelly",
+          "role": "Participante da 1ª Edição (2025)",
+          "quote": "Gostei bastante do chá, acho q uma das dinâmicas mais marcante foi a do espelho, pois mostra que cada uma de nós somos lindas e especiais para Deus e isso é importante pois a muitas meninas que acham q não tem valor ou tem baixa autoestima ❤️",
+          "photoUrl": "/assets/edicoes/2025/feedback-cibelly.jpg",
+          "editionYear": 2025,
+          "tag": "Autoestima & Valor Divino"
+        }
+      ],
+      "logoImage": "/assets/logo-princesas-generico.png"
+    }
+  ],
+  "posts": [
+    {
+      "id": "p1",
+      "slug": "como-surgiu-o-cha-das-princesas",
+      "title": "Como Surgiu o Chá das Princesas?",
+      "subtitle": "Um chamado de Deus para resgatar e curar corações preciosos",
+      "excerpt": "O Chá das Princesas nasceu no coração de Deus no finalzinho do ano de 2024, quando eu Edinea Gomes Barbalho fazia aquela oração em que prometemos mudar algumas coisas...",
+      "content": "O Chá das princesas nasceu no coração de Deus no finalzinho do ano de 2024 quando eu Edinea Gomes Barbalho fazia aquela oração em que prometemos mudar algumas coisas no próximo ano.\n\nEu orava exatamente assim: 'Senhor, ano que vem eu vou focar nos meus projetos, focar em fazer meu escritório para atender melhor meus clientes, vou gastar menos para poder ter dinheiro para esse projeto, dentre outras coisas que prometi'. Lembro-me que ouvi a voz do Senhor dentro do meu ser dizendo que primeiro os projetos Dele, depois os meus. E aí eu estremeci!\n\nA partir desta data comecei a perguntar e indagar em espírito qual eram os projetos de Deus. Entre uma reflexão e outra veio a resposta: existem meninas que carregam dores emocionais — meninas bem próximo aos seus olhos que sofrem com depressão, ansiedade, culpa, sentimento de inferioridade, entre outros problemas emocionais graves que parecem ser espirituais, mas são dores e pancadas emocionais que as seguem até então...\n\nEntão entendi que o projeto Dele era resgatar essas meninas e oferecer um ambiente diferente onde elas iriam se sentir especiais e amadas, e esse lugar seria seu Reino, daí a ideia de associar castelo e princesas.\n\nOutro ponto importante que Deus colocou em meu coração e frisou bem é que **Cada detalhe importa!** E que esse evento teria que me custar algo, que não deveria pedir nada a ninguém nem pedir doações para executar esse projeto, só usando a fé.\n\nCom a ideia em mãos, chamei meu enteado Matheus para me ajudar, já que este é ótimo em fazer listas e perfeito em detalhes. Ele com alegria e prontidão pegou papel e caneta e começou a anotar tudo.\n\nTive um sonho marcante com uma família precisando de alimento e o leite vazando de uma embalagem furada. Acordei compreendendo a urgência: colocamos a data de 15 de Fevereiro de 2025. E assim, tudo foi feito: o convite em pergaminho, as louças, as dinâmicas do espelho e da mochila, e o cuidado das nossas queridas Mordomas intercessoras. Meninas que nem de casa saíam voltaram a sorrir e viver plenamente!",
+      "author": "Edinea Gomes Barbalho",
+      "authorRole": "Idealizadora & Coordenadora",
+      "publishedAt": "24 de Novembro de 2025",
+      "readTime": "4 min de leitura",
+      "coverImage": "/assets/photos/convite-2025.png",
+      "category": "Historia",
+      "tags": [
+        "Origem",
+        "Testemunho",
+        "Fé",
+        "Propósito"
+      ]
+    },
+    {
+      "id": "p2",
+      "slug": "a-regra-numero-dez-do-manual",
+      "title": "A Regra Número 10: Se Sentir Vontade de Chorar, Fique à Vontade",
+      "subtitle": "Por que a mesa do Rei é um lugar seguro para o seu coração",
+      "excerpt": "Entre regras de postura e etiqueta régia, o Manual das Princesas guarda sua joia mais pura no décimo mandamento...",
+      "content": "Quando criamos o Manual das Princesas, queríamos ensinar a nobreza de sentar-se à mesa com compostura, postura e respeito. Mas o Rei do Universo não nos chama para atuar, Ele nos chama para curar.\n\nA regra de número dez foi colocada intencionalmente no final do roteiro: 'Se sentir vontade de chorar, fique à vontade!'.\n\nQuantas mulheres passam semanas, meses ou anos reprimindo suas dores para parecerem fortes para a família, no trabalho ou na igreja? No Chá das Princesas, tiramos as máscaras e as armaduras. As lágrimas derramadas na presença do Pai não são sinal de fraqueza, mas sim o início de uma cura profunda.",
+      "author": "Edinea Gomes Barbalho",
+      "authorRole": "Idealizadora & Coordenadora",
+      "publishedAt": "10 de Fevereiro de 2026",
+      "readTime": "3 min de leitura",
+      "coverImage": "/assets/photos/manual-impresso.jpg",
+      "category": "Reflexao",
+      "tags": [
+        "Cura",
+        "Manual",
+        "Vulnerabilidade",
+        "Amor"
+      ]
+    }
+  ]
+}

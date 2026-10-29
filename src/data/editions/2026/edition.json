@@ -1,0 +1,216 @@
+{
+  "id": "2026",
+  "year": 2026,
+  "number": "2ª Edição",
+  "title": "Herdeiras do Reino",
+  "subtitle": "Filhas Amadas do Rei Celestial",
+  "bibleTheme": {
+    "verse": "Vós, porém, sois geração eleita, sacerdócio real, nação santa, povo de propriedade exclusiva de Deus, a fim de proclamardes as virtudes daquele que vos chamou das trevas para a sua maravilhosa luz.",
+    "reference": "1 Pedro 2:9"
+  },
+  "themeColor": "Azul Celestial",
+  "themePaletteKey": "blue",
+  "date": "21 de Fevereiro de 2026",
+  "location": "Salão Real da Igreja",
+  "status": "current",
+  "description": "A 2ª Edição do Chá das Princesas trouxe a tonalidade Azul Celestial para celebrar nossa filiação e cidadania no Reino de Deus. Um encontro inesquecível onde mulheres foram acolhidas, curadas de feridas emocionais e coroadas com o favor do Pai Celestial.",
+  "logoImage": "/assets/edicoes/2026/logo-2026.png",
+  "bannerImage": "/assets/edicoes/2026/logo-2026.png",
+  "videoUrl": "/assets/edicoes/2026/tour-mesa-real-2026.mp4",
+  "videoPoster": "/assets/edicoes/2026/tour-mesa-real-poster.jpg",
+  "videoCaption": "Tour pela Mesa Real: Cada detalhe importa nos preparativos para acolher as princesas",
+  "rules": [
+    "Coluna reta, postura digna de quem descansa no Rei",
+    "Não colocar os cotovelos sobre a mesa",
+    "Usar o guardanapo dobrado com gentileza sobre o colo ao se servir",
+    "Xícara delicadamente posicionada no lado direito",
+    "Permaneça assentada até a conclusão do banquete da Palavra",
+    "Silêncio reverente durante a ministração para que Deus fale ao coração",
+    "Necessitando ir ao toalete, acione com carinho a sua Dama de Companhia",
+    "Se tiver sede, as Mordomas trarão água fresca até você",
+    "Alimente-se com tranquilidade e paz de espírito",
+    "Se sentir vontade de chorar, fique à vontade! Suas lágrimas são preciosas para Deus"
+  ],
+  "itinerary": [
+    {
+      "step": 1,
+      "title": "O Toque da Trombeta & Recepção Real",
+      "subtitle": "Boas-vindas e cabideiro das bagagens",
+      "description": "Ao som solene de trombetas, as damas de companhia e princesas são recebidas no salão. Na entrada, são convidadas a deixar suas bolsas e fardos no cabideiro real.",
+      "song": "Toque Real de Trombetas"
+    },
+    {
+      "step": 2,
+      "title": "Acolhimento da Mordoma Palestrante",
+      "subtitle": "O convite ao descanso de Mateus 11:28",
+      "description": "Saudação amorosa onde cada princesa ouve sobre seu inestimável valor para o Rei Jesus.",
+      "song": "Instrumental Suave"
+    },
+    {
+      "step": 3,
+      "title": "A Mesa do Banquete & Manual das Princesas",
+      "subtitle": "Etiqueta, reverência e acolhimento emocional",
+      "description": "Leitura em conjunto do Manual das Princesas, com ênfase especial na liberdade emocional e no carinho com que a mesa foi posta.",
+      "song": "Louvor de Paz"
+    },
+    {
+      "step": 4,
+      "title": "Dinâmica das Pedras & Abertura do Coração",
+      "subtitle": "Descarregando o peso dos ombros",
+      "description": "Momento de desabafo onde dores secretas são entregues nas mãos do Senhor Jesus, que tomou sobre si todos os nossos fardos.",
+      "song": "Lindo Momento (Julliany Souza)"
+    },
+    {
+      "step": 5,
+      "title": "Espelho da Graça: Quem o Rei Diz Que Eu Sou",
+      "subtitle": "Decretos de cura, filiação e redenção",
+      "description": "Cada mulher olha para o espelho, quebra palavras que feriram sua autoestima e declara sua real identidade como filha e herdeira do Altíssimo.",
+      "song": "Essa tal de Rejeição (Fernanda Brum)"
+    },
+    {
+      "step": 6,
+      "title": "Consagração, Oração & Banquete Festivo",
+      "subtitle": "Unção de cura e comunhão regada a chá",
+      "description": "As mordomas intercessoras ministram oração individual com unção e cânticos de adoração, seguido por uma alegre comunhão à mesa.",
+      "song": "Ministração Profética"
+    }
+  ],
+  "photos": [
+    {
+      "url": "/assets/edicoes/2026/coroa-real-tiara.jpg",
+      "caption": "A coroa real reluzente e o laço azul celeste: símbolos da identidade de filhas do Rei Celestial.",
+      "category": "ambiente"
+    },
+    {
+      "url": "/assets/edicoes/2026/marcador-lugar-taca-azul.jpg",
+      "caption": "Marcador de lugar com laço azul celeste e taça de cristal lapidado (21/02/2026).",
+      "category": "ambiente"
+    },
+    {
+      "url": "/assets/edicoes/2026/detalhe-lugar-personalizado.jpg",
+      "caption": "Lugar personalizado com versículo bíblico, prato em vidro trabalhado e colher dourada de coração.",
+      "category": "ambiente"
+    },
+    {
+      "url": "/assets/edicoes/2026/mesa-real-panoramica.jpg",
+      "caption": "A mesa real decorada em azul celeste com balões transparentes e arranjos florais.",
+      "category": "ambiente"
+    },
+    {
+      "url": "/assets/edicoes/2026/mesa-posta-cortinas-voil.jpg",
+      "caption": "Mesa posta sob a varanda com cortinas de voil brancas e vista para o jardim.",
+      "category": "ambiente"
+    },
+    {
+      "url": "/assets/edicoes/2026/mesa-banquete-perspectiva.jpg",
+      "caption": "Perspectiva da grande mesa: taças azuis, louças finas e cada detalhe preparado com excelência.",
+      "category": "ambiente"
+    },
+    {
+      "url": "/assets/edicoes/2026/princesa-mesa-banquete.jpg",
+      "caption": "A princesa à mesa do banquete com o laço azul celeste, contemplando o salão real.",
+      "category": "ambiente"
+    },
+    {
+      "url": "/assets/edicoes/2026/princesas-trajes-celestes.jpg",
+      "caption": "Princesas radiantes com seus trajes em tom azul celeste desfrutando do encontro real.",
+      "category": "momentos"
+    },
+    {
+      "url": "/assets/edicoes/2026/momento-cura-abraco.jpg",
+      "caption": "Lágrimas de cura e alívio emocional: o acolhimento afetuoso que restaura a alma.",
+      "category": "dinamica"
+    },
+    {
+      "url": "/assets/edicoes/2026/ministracao-da-palavra.jpg",
+      "caption": "Ministração profética da Palavra e cânticos de adoração tocando os corações.",
+      "category": "momentos"
+    },
+    {
+      "url": "/assets/edicoes/2026/edinea-matheus-organizacao.jpg",
+      "caption": "Edinea Gomes Barbalho, Matheus Barbalho e equipe celebrando a realização da 2ª Edição.",
+      "category": "momentos"
+    },
+    {
+      "url": "/assets/edicoes/2026/apoio-pastoral-mesa-real.jpg",
+      "caption": "Apoio e bênção pastoral ao lado da mesa do banquete real preparado para as princesas.",
+      "category": "momentos"
+    },
+    {
+      "url": "/assets/edicoes/2026/edinea-e-mordomas-alegria.jpg",
+      "caption": "Edinea e as dedicadas mordomas com sorrisos de gratidão pela graça do evento.",
+      "category": "momentos"
+    },
+    {
+      "url": "/assets/edicoes/2026/edinea-e-matheus-comemoracao.jpg",
+      "caption": "A alegria contagiante dos idealizadores Edinea e Matheus com a missão cumprida.",
+      "category": "momentos"
+    },
+    {
+      "url": "/assets/edicoes/2026/mordomas-intercessoras-jardim.jpg",
+      "caption": "Mordomas intercessoras que sustentaram o banquete com amor e intercessão contínua.",
+      "category": "momentos"
+    },
+    {
+      "url": "/assets/edicoes/2026/gratidao-apos-evento.jpg",
+      "caption": "Comunhão e alegria pura após uma jornada emocionante de ministração e cura.",
+      "category": "momentos"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "t-2026-camila",
+      "name": "Princesa Camila",
+      "role": "Participante da 2ª Edição (2026)",
+      "quote": "Me senti importante me senti alguém porque eu sofro muito bullying na escola.\n\nEu me sinto muito linda me senti acolhida me senti muito bem.",
+      "photoUrl": "/assets/edicoes/2026/feedback_camila.jpeg",
+      "editionYear": 2026,
+      "tag": "Acolhimento & Superação do Bullying"
+    },
+    {
+      "id": "t-2026-viviane",
+      "name": "Princesa Viviane",
+      "role": "Participante da 2ª Edição (2026)",
+      "quote": "Então eu amei o chá das princesas, as palestras, palavras levanta a nossa autoestima, nosso psicológico é trabalhado, tudo perfeito e lindo, foi algo muito gratificante na minha vida 🙏🙌",
+      "photoUrl": "/assets/edicoes/2026/feedback_viviane.jpeg",
+      "editionYear": 2026,
+      "tag": "Autoestima & Cuidado Emocional"
+    },
+    {
+      "id": "t-2026-raquel",
+      "name": "Princesa Raquel",
+      "role": "Participante da 2ª Edição (2026)",
+      "quote": "Olá, passando para deixar meu Feedback sobre o chá das princesas!! Que dia espetacular, me sentir única e como nunca havia me sentindo antes. Que Deus derrame chuvas de benções sobre as pessoas que Deus escolheu ali para tratar de nós mulheres que precisava deste momento único. Gratidão! 🙏❤️",
+      "photoUrl": "/assets/edicoes/2026/feedback_raquel.jpeg",
+      "editionYear": 2026,
+      "tag": "Sentir-se Única & Cura Interior"
+    },
+    {
+      "id": "t-2026-suely",
+      "name": "Princesa Suely",
+      "role": "Participante da 2ª Edição (2026)",
+      "quote": "O chá das princesas foi muito bom, amei tudo do começo ao fim, espero poder participar outras vezes, me fez muito bem espiritualmente, gratidão a Deus, e a vc Ednéia, por ter me convidado.",
+      "photoUrl": "/assets/edicoes/2026/feedback_suely.jpeg",
+      "editionYear": 2026,
+      "tag": "Renovação Espiritual & Gratidão"
+    },
+    {
+      "id": "t-2026-samara",
+      "name": "Princesa Samara",
+      "role": "Participante da 2ª Edição (2026)",
+      "quote": "Boa tarde! Amei o Chá das Princesas, foi tudo lindo e muito bem organizado. Decoração impecável, ambiente super acolhedor e cheio de carinho em cada detalhe. Foi uma tarde mágica e especial, me senti uma verdadeira princesa. Super indico! ✨👑",
+      "photoUrl": "/assets/edicoes/2026/feedback_samara.jpeg",
+      "editionYear": 2026,
+      "tag": "Carinho em Cada Detalhe"
+    },
+    {
+      "id": "t-2026-flavia",
+      "name": "Princesa Flávia",
+      "role": "Participante da 2ª Edição (2026)",
+      "quote": "Foi tudo perfeito, só tenho que agradecer por tudo. Tudo feito com muito amor e capricho. O momento de dicas de beleza e autocuidado foi excelente!! Parabéns para toda equipe, foi tudo realmente perfeito. 👏🥰",
+      "photoUrl": "/assets/edicoes/2026/feedback.jpeg",
+      "editionYear": 2026,
+      "tag": "Autocuidado & Capricho"
+    }
+  ]
+}

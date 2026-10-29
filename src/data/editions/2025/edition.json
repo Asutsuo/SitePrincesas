@@ -1,0 +1,155 @@
+{
+  "id": "2025",
+  "year": 2025,
+  "number": "1ª Edição",
+  "title": "A Mochila",
+  "subtitle": "Vinde a Mim os Cansados e Sobrecarregados",
+  "bibleTheme": {
+    "verse": "Vinde a mim, todos os que estais cansados e sobrecarregados, e eu vos aliviarei. Tomai sobre vós o meu jugo e aprendei de mim, porque sou manso e humilde de coração; e achareis descanso para a vossa alma. Porque o meu jugo é suave, e o meu fardo é leve.",
+    "reference": "Mateus 11:28-30"
+  },
+  "themeColor": "Lilás Imperial",
+  "themePaletteKey": "lilac",
+  "date": "15 de Fevereiro de 2025",
+  "location": "Salão Real da Igreja",
+  "status": "past",
+  "description": "O marco inaugural do Chá das Princesas. Para fugir do tradicional rosa infantil, foi escolhido o lilás suave para simbolizar honra, cura e restauração. O tema 'A Mochila' trouxe alívio espiritual e emocional para fardos pesados que as jovens carregavam em silêncio.",
+  "bannerImage": "/assets/edicoes/2025/convite-2025.png",
+  "logoImage": "/assets/logo-princesas-generico.png",
+  "rules": [
+    "Coluna reta, não deitar na cabeceira da cadeira",
+    "Não colocar os cotovelos sobre a mesa",
+    "Use o guardanapo de forma correta (dobrado sobre o colo)",
+    "Coloque a xícara no lado direito",
+    "Não se levantar antes que termine o chá",
+    "Não conversar durante o chá para prestar atenção na Palavra",
+    "Se for muito necessário ir ao banheiro, peça à Dama de Companhia",
+    "Se der sede, solicitar à Dama de Companhia que buscará a água",
+    "O que estiver à mesa pode comer silenciosamente sem atrapalhar a ministração",
+    "Se sentir vontade de chorar, fique à vontade!"
+  ],
+  "itinerary": [
+    {
+      "step": 1,
+      "title": "Som de Trombeta & Desapego",
+      "subtitle": "Entrada das princesas e cabideiro",
+      "description": "Tocadas as trombetas anunciando a chegada, as princesas deixaram bolsas e pertences no cabideiro da entrada como ato simbólico de desapego dos fardos.",
+      "song": "Trombeta Real"
+    },
+    {
+      "step": 2,
+      "title": "Acolhimento & Palavra Inicial",
+      "subtitle": "A importância de colocar os pesos no Senhor",
+      "description": "Apresentação da mordoma palestrante, demonstrando o carinho de Deus por cada uma e apontando para o versículo de Mateus 11:28 nos caminhos de mesa.",
+      "song": "Instrumental"
+    },
+    {
+      "step": 3,
+      "title": "Manual das Princesas",
+      "subtitle": "Etiqueta e acolhimento à mesa",
+      "description": "Leitura do manual impresso entregue em papel especial na entrada do salão real, culminando na liberdade para chorar.",
+      "song": "Fundo musical suave"
+    },
+    {
+      "step": 4,
+      "title": "Dinâmica da Mochila",
+      "subtitle": "Retirando as pedras pesadas",
+      "description": "Pedras com inscrições de depressão, culpa, bullying e fardos colocados na mochila, pesados nos ombros e depois lançados fora pela fé.",
+      "song": "Lindo Momento (Julliany Souza)"
+    },
+    {
+      "step": 5,
+      "title": "Dinâmica Espelho, Espelho Meu!",
+      "subtitle": "Profetizando cura e filiação real",
+      "description": "Com espelhos nas mãos, cada princesa proclamou: 'Eu sou livre, eu sou filha do Rei, meu Pai segura minha mão!'.",
+      "song": "Essa tal de Rejeição (Fernanda Brum)"
+    },
+    {
+      "step": 6,
+      "title": "Momento Oração e Unção",
+      "subtitle": "Imposição de mãos e louvor profético",
+      "description": "Mordomas alinhadas orando por cada jovem com unção, e cânticos ministrados pela cantora Jéssica.",
+      "song": "Canções de Sara Beatriz"
+    }
+  ],
+  "photos": [
+    {
+      "url": "/assets/edicoes/2025/convite-2025.png",
+      "caption": "O símbolo e convite oficial da 1ª Edição: A Mochila, representando o alívio das cargas pesadas e o descanso em Cristo.",
+      "category": "convite"
+    },
+    {
+      "url": "/assets/edicoes/2025/entrada-princesas.jpg",
+      "caption": "A acolhida régia das jovens e suas damas de companhia na entrada do castelo.",
+      "category": "momentos"
+    },
+    {
+      "url": "/assets/edicoes/2025/mesa-real.jpg",
+      "caption": "A mesa real ricamente posta com louças, xícaras e o caminho com a Palavra de Deus.",
+      "category": "ambiente"
+    },
+    {
+      "url": "/assets/edicoes/2025/manual-impresso.jpg",
+      "caption": "O Manual das Princesas impresso em papel nobre entregue a cada participante.",
+      "category": "ambiente"
+    },
+    {
+      "url": "/assets/edicoes/2025/dinamica-espelho.jpg",
+      "caption": "A profunda dinâmica do espelho: quebrando palavras de rejeição e declarando vida.",
+      "category": "dinamica"
+    },
+    {
+      "url": "/assets/edicoes/2025/edinea-palestrante.jpg",
+      "caption": "Edinea Gomes Barbalho ministrando a Palavra do Rei aos corações.",
+      "category": "momentos"
+    },
+    {
+      "url": "/assets/edicoes/2025/mordomas-intercessoras.jpg",
+      "caption": "As fiéis mordomas intercessoras que sustentaram o evento em oração.",
+      "category": "momentos"
+    },
+    {
+      "url": "/assets/edicoes/2025/grupo-princesas-sorrindo.jpg",
+      "caption": "O resultado final: sorrisos restaurados de princesas que antes não sorriam.",
+      "category": "momentos"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "t-marcelly",
+      "name": "Princesa Marcelly",
+      "role": "Participante da 1ª Edição (2025)",
+      "quote": "Achei importante, também é muito importante pra quem tivesse depressão, ensinou muitas coisas sobre o valor que temos para Deus e que somos todas amadas por Ele 🙏🏻 Eu gostei de todas as dinâmicas, também teve a dinâmica do espelho que foi muito lindo. ❤️ O chá das princesas foi lindo 🙏🏻",
+      "photoUrl": "/assets/edicoes/2025/feedback-marcelly.jpg",
+      "editionYear": 2025,
+      "tag": "Valor para Deus & Dinâmica do Espelho"
+    },
+    {
+      "id": "t-laura",
+      "name": "Princesa Laura",
+      "role": "Participante da 1ª Edição (2025)",
+      "quote": "O momento mais marcante foi quando eu chorei do momento da palavra de Deus, oq acrescentou em minha foi q eu aprendi a tocar bateria, aprendi muitas plantadas de Deus, fiz nova amizades e me sentir encolhida e oq me chamou mais atenção foi a Jessica cantando louvor, sobre a palestrante, eu gostei e eu admiro uma pessoa que expira a ser correta e uma pessoa acolhedora e admirável como ser humano aaaaahhhhh.......poxa ñ tem nem uma palavra pra explicar tão incrível que é. Sobre a dinâmica mais impactante foi a da pedra onde escrevia as coisa ruim na pedra e colocava na mochila como q fosse peso q a gente carregava com a gente. ❤️",
+      "photoUrl": "/assets/edicoes/2025/feedback-laura.jpg",
+      "editionYear": 2025,
+      "tag": "Lágrimas de Cura & Dinâmica da Pedra"
+    },
+    {
+      "id": "t-emilly",
+      "name": "Princesa Emilly",
+      "role": "Participante da 1ª Edição (2025)",
+      "quote": "Oi aqui é a Emilly!! Eu amei o evento e tudo o que teve lá foi muito bom, Eu acho que seria legal se no evento fazer uma brincadeira ou algo do tipo. que tenha haver com a palestra . Gostei da dinâmica da mochila .",
+      "photoUrl": "/assets/edicoes/2025/feedback-emilly.jpg",
+      "editionYear": 2025,
+      "tag": "Dinâmica da Mochila"
+    },
+    {
+      "id": "t-cibelly",
+      "name": "Princesa Cibelly",
+      "role": "Participante da 1ª Edição (2025)",
+      "quote": "Gostei bastante do chá, acho q uma das dinâmicas mais marcante foi a do espelho, pois mostra que cada uma de nós somos lindas e especiais para Deus e isso é importante pois a muitas meninas que acham q não tem valor ou tem baixa autoestima ❤️",
+      "photoUrl": "/assets/edicoes/2025/feedback-cibelly.jpg",
+      "editionYear": 2025,
+      "tag": "Autoestima & Valor Divino"
+    }
+  ]
+}
