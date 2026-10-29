@@ -22,8 +22,13 @@ import {
   Database,
   ExternalLink,
   HelpCircle,
+  Pencil,
+  Image as ImageIcon,
+  Film,
+  X,
+  Plus,
 } from "lucide-react";
-import { Edition, BlogPost } from "@/lib/types";
+import { Edition, BlogPost, EditionPhoto } from "@/lib/types";
 
 export default function AdminPage() {
   const {
@@ -55,8 +60,18 @@ export default function AdminPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showKvHelp, setShowKvHelp] = useState(false);
 
-  // Form states for New Edition
-  const [editionForm, setEditionForm] = useState<Partial<Edition>>({
+  // Editing states
+  const [editingEditionId, setEditingEditionId] = useState<string | null>(null);
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+
+  // New photo inputs for edition gallery
+  const [newPhotoUrl, setNewPhotoUrl] = useState("");
+  const [newPhotoCaption, setNewPhotoCaption] = useState("");
+  const [newPhotoCategory, setNewPhotoCategory] = useState<
+    "ambiente" | "momentos" | "dinamica" | "convite"
+  >("momentos");
+
+  const defaultEditionState: Partial<Edition> = {
     year: 2027,
     number: "3ª Edição",
     title: "",
@@ -68,7 +83,19 @@ export default function AdminPage() {
     location: "Salão Real da Igreja",
     status: "upcoming",
     description: "",
-  });
+    bannerImage: "",
+    videoUrl: "",
+    videoCaption: "",
+    videoPoster: "",
+    photos: [],
+    itinerary: [],
+    rules: [],
+    testimonials: [],
+  };
+
+  // Form states for New / Edited Edition
+  const [editionForm, setEditionForm] =
+    useState<Partial<Edition>>(defaultEditionState);
 
   // Form states for New Blog Post
   const [postForm, setPostForm] = useState<Partial<BlogPost>>({
@@ -197,7 +224,65 @@ export default function AdminPage() {
     }
   };
 
-  // Save New Edition
+  // Start editing an existing edition
+  const handleStartEditEdition = (edition: Edition) => {
+    setEditingEditionId(edition.id);
+    setEditionForm({
+      ...edition,
+      photos: edition.photos ? [...edition.photos] : [],
+      itinerary: edition.itinerary ? [...edition.itinerary] : [],
+      rules: edition.rules ? [...edition.rules] : [],
+      testimonials: edition.testimonials ? [...edition.testimonials] : [],
+    });
+    const formEl = document.getElementById("edition-form-section");
+    if (formEl) {
+      formEl.scrollIntoView({ behavior: "smooth" });
+    }
+    showToast(
+      "success",
+      `Modo de edição: Carregado "${edition.number} (${edition.year})". Altere os dados e fotos abaixo e clique em Salvar.`,
+    );
+  };
+
+  // Cancel editing an edition
+  const handleCancelEditEdition = () => {
+    setEditingEditionId(null);
+    setEditionForm(defaultEditionState);
+    setNewPhotoUrl("");
+    setNewPhotoCaption("");
+  };
+
+  // Add a photo to current edition form
+  const handleAddPhotoToEdition = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!newPhotoUrl.trim()) {
+      showToast("error", "Informe a URL ou o caminho da foto.");
+      return;
+    }
+    const newPhoto: EditionPhoto = {
+      url: newPhotoUrl.trim(),
+      caption: newPhotoCaption.trim() || "Registro do Chá das Princesas",
+      category: newPhotoCategory,
+    };
+    setEditionForm((prev) => ({
+      ...prev,
+      photos: [...(prev.photos || []), newPhoto],
+    }));
+    setNewPhotoUrl("");
+    setNewPhotoCaption("");
+    showToast("success", "Foto adicionada à lista da edição!");
+  };
+
+  // Remove a photo from current edition form
+  const handleRemovePhotoFromEdition = (indexToRemove: number) => {
+    setEditionForm((prev) => ({
+      ...prev,
+      photos: (prev.photos || []).filter((_, idx) => idx !== indexToRemove),
+    }));
+    showToast("success", "Foto removida da galeria.");
+  };
+
+  // Save / Update Edition
   const handleCreateEdition = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editionForm.title || !editionForm.year) {
@@ -209,8 +294,10 @@ export default function AdminPage() {
     try {
       const pinToUse =
         activePin || siteData?.settings?.adminPin || "princesas2026";
-      const newEdition: Edition = {
-        id: String(editionForm.year),
+      const targetId = editingEditionId || String(editionForm.year);
+
+      const targetEdition: Edition = {
+        id: targetId,
         year: Number(editionForm.year),
         number: editionForm.number || `${editionForm.year}ª Edição`,
         title: editionForm.title,
@@ -222,29 +309,32 @@ export default function AdminPage() {
         location: editionForm.location || "Salão Real da Igreja",
         status: (editionForm.status as any) || "upcoming",
         description: editionForm.description || "",
-        itinerary: [],
-        rules: [],
-        photos: [],
-        testimonials: [],
+        bannerImage: editionForm.bannerImage || "",
+        videoUrl: editionForm.videoUrl || "",
+        videoCaption: editionForm.videoCaption || "",
+        videoPoster: editionForm.videoPoster || "",
+        photos: editionForm.photos || [],
+        itinerary: editionForm.itinerary || [],
+        rules: editionForm.rules || [],
+        testimonials: editionForm.testimonials || [],
       };
 
       const res = await fetch("/api/editions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pin: pinToUse, edition: newEdition }),
+        body: JSON.stringify({ pin: pinToUse, edition: targetEdition }),
       });
       const data = (await res.json()) as any;
       if (data.success) {
         showToast(
           "success",
-          `Edição ${editionForm.year} cadastrada com sucesso!`,
+          editingEditionId
+            ? `Edição ${editionForm.year} atualizada com sucesso!`
+            : `Edição ${editionForm.year} cadastrada com sucesso!`,
         );
         await refreshData();
-        setEditionForm({
-          year: (editionForm.year || 2027) + 1,
-          title: "",
-          subtitle: "",
-        });
+        setEditingEditionId(null);
+        setEditionForm(defaultEditionState);
       } else {
         showToast("error", data.error || "Erro ao salvar edição.");
       }
@@ -281,6 +371,10 @@ export default function AdminPage() {
       const data = (await res.json()) as any;
       if (data.success) {
         showToast("success", `Edição "${editionTitle}" excluída com sucesso!`);
+        if (editingEditionId === editionId) {
+          setEditingEditionId(null);
+          setEditionForm(defaultEditionState);
+        }
         await refreshData();
       } else {
         showToast("error", data.error || "Erro ao excluir edição.");
@@ -292,7 +386,34 @@ export default function AdminPage() {
     }
   };
 
-  // Save Blog Post
+  // Start editing a blog post
+  const handleStartEditPost = (post: BlogPost) => {
+    setEditingPostId(post.id);
+    setPostForm({ ...post });
+    const postEl = document.getElementById("post-form-section");
+    if (postEl) {
+      postEl.scrollIntoView({ behavior: "smooth" });
+    }
+    showToast("success", `Carregando reflexão "${post.title}" para edição.`);
+  };
+
+  // Cancel editing blog post
+  const handleCancelEditPost = () => {
+    setEditingPostId(null);
+    setPostForm({
+      title: "",
+      subtitle: "",
+      category: "Reflexao",
+      excerpt: "",
+      content: "",
+      author: "Edinea Gomes Barbalho",
+      authorRole: "Idealizadora & Coordenadora",
+      readTime: "3 min",
+      tags: ["Edificação", "Fé"],
+    });
+  };
+
+  // Save / Update Blog Post
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!postForm.title || !postForm.content) {
@@ -304,6 +425,7 @@ export default function AdminPage() {
     try {
       const pinToUse =
         activePin || siteData?.settings?.adminPin || "princesas2026";
+      const targetPostId = editingPostId || `p_${Date.now()}`;
       const slug = (postForm.title || "post")
         .toLowerCase()
         .normalize("NFD")
@@ -311,8 +433,8 @@ export default function AdminPage() {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
 
-      const newPost: BlogPost = {
-        id: `p_${Date.now()}`,
+      const updatedPost: BlogPost = {
+        id: targetPostId,
         slug,
         title: postForm.title,
         subtitle: postForm.subtitle,
@@ -321,11 +443,13 @@ export default function AdminPage() {
         content: postForm.content,
         author: postForm.author || "Edinea Gomes Barbalho",
         authorRole: postForm.authorRole || "Idealizadora & Coordenadora",
-        publishedAt: new Date().toLocaleDateString("pt-BR", {
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        }),
+        publishedAt:
+          postForm.publishedAt ||
+          new Date().toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          }),
         readTime: postForm.readTime || "3 min",
         tags: postForm.tags || ["Reflexão"],
       };
@@ -333,15 +457,21 @@ export default function AdminPage() {
       const res = await fetch("/api/posts", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pin: pinToUse, post: newPost }),
+        body: JSON.stringify({ pin: pinToUse, post: updatedPost }),
       });
       const data = (await res.json()) as any;
       if (data.success) {
-        showToast("success", "Reflexão publicada no site com sucesso!");
+        showToast(
+          "success",
+          editingPostId
+            ? "Reflexão atualizada com sucesso!"
+            : "Reflexão publicada no site com sucesso!",
+        );
         await refreshData();
+        setEditingPostId(null);
         setPostForm({ title: "", subtitle: "", excerpt: "", content: "" });
       } else {
-        showToast("error", data.error || "Erro ao publicar.");
+        showToast("error", data.error || "Erro ao salvar reflexão.");
       }
     } catch {
       showToast("error", "Erro ao conectar ao servidor.");
@@ -779,19 +909,52 @@ export default function AdminPage() {
         {/* TAB 2: EDITIONS */}
         {activeTab === "editions" && (
           <div className="space-y-8">
-            <div className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-md">
-              <div className="flex items-center gap-2 text-xs uppercase font-serif tracking-widest font-bold text-[var(--color-accent-gold-dark)] mb-1">
-                <PlusCircle className="w-4 h-4 text-[var(--color-accent-gold)]" />
-                Nova Edição
-              </div>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[var(--color-primary-deep)]">
-                Cadastrar Nova Edição do Chá das Princesas
-              </h2>
-              <p className="text-sm text-stone-600 mt-1 mb-8 font-sans">
-                Adicione as edições anuais futuras com facilidade para manter o acervo do ministério sempre atualizado.
-              </p>
+            <div
+              id="edition-form-section"
+              className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-md scroll-mt-24"
+            >
+              {/* Header / Active Editing Notice */}
+              {editingEditionId ? (
+                <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4 sm:p-5 mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in shadow-xs">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-amber-200/80 flex items-center justify-center text-amber-900 flex-shrink-0">
+                      <Pencil className="w-5 h-5 text-amber-800" />
+                    </div>
+                    <div>
+                      <div className="font-serif font-bold text-base sm:text-lg text-amber-950">
+                        Editando: {editionForm.number || `${editionForm.year}ª Edição`} ({editionForm.year}) — {editionForm.title}
+                      </div>
+                      <p className="text-xs text-amber-800 font-sans mt-0.5">
+                        Altere as informações, fotos ou vídeo abaixo e clique em Salvar Alterações para atualizar a edição no site.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCancelEditEdition}
+                    className="self-start sm:self-center inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-amber-300 text-xs font-semibold text-stone-700 hover:bg-stone-50 transition-colors cursor-pointer shadow-xs flex-shrink-0"
+                  >
+                    <X className="w-3.5 h-3.5 text-stone-500" />
+                    <span>Cancelar Edição</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="mb-8">
+                  <div className="flex items-center gap-2 text-xs uppercase font-serif tracking-widest font-bold text-[var(--color-accent-gold-dark)] mb-1">
+                    <PlusCircle className="w-4 h-4 text-[var(--color-accent-gold)]" />
+                    Edição do Ministério
+                  </div>
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[var(--color-primary-deep)]">
+                    Cadastrar Nova Edição do Chá das Princesas
+                  </h2>
+                  <p className="text-sm text-stone-600 mt-1 font-sans">
+                    Adicione as edições anuais futuras ou selecione uma edição existente abaixo para editar fotos, vídeos e textos.
+                  </p>
+                </div>
+              )}
 
               <form onSubmit={handleCreateEdition} className="space-y-6 font-sans">
+                {/* 1. Core Metadata */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
@@ -828,20 +991,22 @@ export default function AdminPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
-                      Nome da Cor Temática
+                      Status da Edição
                     </label>
-                    <input
-                      type="text"
-                      value={editionForm.themeColor || "Dourado & Pérola"}
+                    <select
+                      value={editionForm.status || "upcoming"}
                       onChange={(e) =>
                         setEditionForm({
                           ...editionForm,
-                          themeColor: e.target.value,
+                          status: e.target.value as any,
                         })
                       }
-                      placeholder="Ex: Verde Sálvia, Rosa Chá..."
-                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
-                    />
+                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none bg-white"
+                    >
+                      <option value="upcoming">Futura / Em Breve (upcoming)</option>
+                      <option value="current">Atual (current)</option>
+                      <option value="past">Realizada / Histórica (past)</option>
+                    </select>
                   </div>
                 </div>
 
@@ -878,6 +1043,85 @@ export default function AdminPage() {
                         })
                       }
                       placeholder="Ex: Filhas Amadas do Rei Celestial"
+                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
+                      Nome da Cor Temática
+                    </label>
+                    <input
+                      type="text"
+                      value={editionForm.themeColor || "Dourado & Pérola"}
+                      onChange={(e) =>
+                        setEditionForm({
+                          ...editionForm,
+                          themeColor: e.target.value,
+                        })
+                      }
+                      placeholder="Ex: Azul Celestial, Rosa Chá, Dourado..."
+                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
+                      Paleta de Cor Visual do Sistema
+                    </label>
+                    <select
+                      value={editionForm.themePaletteKey || "gold"}
+                      onChange={(e) =>
+                        setEditionForm({
+                          ...editionForm,
+                          themePaletteKey: e.target.value as any,
+                        })
+                      }
+                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none bg-white"
+                    >
+                      <option value="blue">Azul Celestial (blue)</option>
+                      <option value="lilac">Lilás Real (lilac)</option>
+                      <option value="rose">Rosa Real (rose)</option>
+                      <option value="gold">Dourado Majestoso (gold)</option>
+                      <option value="sage">Verde Sálvia (sage)</option>
+                      <option value="burgundy">Bordeaux Real (burgundy)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
+                      Data ou Período
+                    </label>
+                    <input
+                      type="text"
+                      value={editionForm.date || ""}
+                      onChange={(e) =>
+                        setEditionForm({
+                          ...editionForm,
+                          date: e.target.value,
+                        })
+                      }
+                      placeholder="Ex: Ano 2027 ou Outubro de 2027"
+                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
+                      Local do Evento
+                    </label>
+                    <input
+                      type="text"
+                      value={editionForm.location || ""}
+                      onChange={(e) =>
+                        setEditionForm({
+                          ...editionForm,
+                          location: e.target.value,
+                        })
+                      }
+                      placeholder="Ex: Salão Real da Igreja"
                       className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   </div>
@@ -945,15 +1189,222 @@ export default function AdminPage() {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-6 py-3 rounded-xl text-sm font-semibold text-white shadow-md transition-all cursor-pointer flex items-center gap-2"
-                  style={{ backgroundColor: "var(--color-primary)" }}
-                >
-                  <Save className="w-4 h-4" />
-                  <span>Cadastrar Edição</span>
-                </button>
+                {/* 2. Media Section: Banner, Video & Photos */}
+                <div className="pt-6 border-t border-stone-200 space-y-6">
+                  <div className="flex items-center gap-2">
+                    <ImageIcon className="w-5 h-5 text-[var(--color-accent-gold)]" />
+                    <h3 className="font-serif font-bold text-lg text-[var(--color-primary-deep)]">
+                      Mídia, Vídeo & Galeria de Fotos
+                    </h3>
+                  </div>
+
+                  {/* Banner / Card Image */}
+                  <div className="p-4 rounded-2xl bg-[#faf8f5] border border-stone-200 space-y-3">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-1">
+                        Banner ou Imagem Símbolo da Edição
+                      </label>
+                      <input
+                        type="text"
+                        value={editionForm.bannerImage || ""}
+                        onChange={(e) =>
+                          setEditionForm({
+                            ...editionForm,
+                            bannerImage: e.target.value,
+                          })
+                        }
+                        placeholder="Ex: /assets/logo-2026.png ou URL da imagem"
+                        className="w-full px-4 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm bg-white focus:outline-none focus:border-[var(--color-primary)] font-mono"
+                      />
+                      <p className="text-[11px] text-stone-500 mt-1">
+                        Imagem exibida no card principal desta edição no site.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Video Section */}
+                  <div className="p-4 rounded-2xl bg-[#faf8f5] border border-stone-200 space-y-3">
+                    <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-700">
+                      <Film className="w-4 h-4 text-[var(--color-accent-gold)]" />
+                      <span>Vídeo em Destaque da Edição (Opcional)</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-medium text-stone-600 mb-1">
+                          Caminho ou Link do Vídeo (MP4)
+                        </label>
+                        <input
+                          type="text"
+                          value={editionForm.videoUrl || ""}
+                          onChange={(e) =>
+                            setEditionForm({
+                              ...editionForm,
+                              videoUrl: e.target.value,
+                            })
+                          }
+                          placeholder="Ex: /assets/video-2026.mp4 ou URL direta"
+                          className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm bg-white focus:outline-none focus:border-[var(--color-primary)] font-mono"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-medium text-stone-600 mb-1">
+                          Legenda / Título do Vídeo
+                        </label>
+                        <input
+                          type="text"
+                          value={editionForm.videoCaption || ""}
+                          onChange={(e) =>
+                            setEditionForm({
+                              ...editionForm,
+                              videoCaption: e.target.value,
+                            })
+                          }
+                          placeholder="Ex: Tour filmado pelos detalhes da Mesa Real"
+                          className="w-full px-3.5 py-2 rounded-xl border border-stone-300 text-xs sm:text-sm bg-white focus:outline-none focus:border-[var(--color-primary)]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Photos Gallery Management */}
+                  <div className="p-4 sm:p-5 rounded-2xl bg-[#faf8f5] border border-stone-200 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <ImageIcon className="w-4 h-4 text-[var(--color-accent-gold)]" />
+                        <h4 className="font-serif font-bold text-sm sm:text-base text-stone-900">
+                          Galeria de Fotos ({editionForm.photos?.length || 0} fotos cadastradas)
+                        </h4>
+                      </div>
+                    </div>
+
+                    {/* Existing Photos Grid */}
+                    {editionForm.photos && editionForm.photos.length > 0 ? (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-h-72 overflow-y-auto p-1">
+                        {editionForm.photos.map((photo, pIdx) => (
+                          <div
+                            key={pIdx}
+                            className="group relative bg-white rounded-xl border border-stone-200 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col"
+                          >
+                            <div className="relative aspect-video w-full bg-stone-100 overflow-hidden">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={photo.url}
+                                alt={photo.caption}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src =
+                                    "/assets/logo-princesas-generico.png";
+                                }}
+                              />
+                              <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded text-[9px] font-semibold bg-black/60 text-white uppercase tracking-wider backdrop-blur-xs">
+                                {photo.category || "momentos"}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleRemovePhotoFromEdition(pIdx)}
+                                className="absolute top-1 right-1 p-1 rounded-full bg-red-600 text-white hover:bg-red-700 transition-colors shadow-xs cursor-pointer"
+                                title="Remover esta foto"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            </div>
+                            <div className="p-2 text-[11px] text-stone-700 truncate font-sans">
+                              {photo.caption || "Sem legenda"}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-xl bg-white border border-stone-200 text-center text-xs text-stone-500 font-serif italic">
+                        Nenhuma foto cadastrada nesta edição ainda. Adicione fotos no formulário abaixo!
+                      </div>
+                    )}
+
+                    {/* Add Photo Sub-form */}
+                    <div className="bg-white p-4 rounded-xl border border-stone-200 space-y-3">
+                      <div className="font-semibold text-xs text-stone-800 flex items-center gap-1.5">
+                        <Plus className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+                        <span>Adicionar Nova Foto à Galeria Desta Edição</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+                        <div className="sm:col-span-5">
+                          <input
+                            type="text"
+                            value={newPhotoUrl}
+                            onChange={(e) => setNewPhotoUrl(e.target.value)}
+                            placeholder="URL da foto (ex: /assets/foto.jpg ou link https)"
+                            className="w-full px-3 py-2 rounded-lg border border-stone-300 text-xs focus:outline-none focus:border-[var(--color-primary)] font-mono"
+                          />
+                        </div>
+
+                        <div className="sm:col-span-4">
+                          <input
+                            type="text"
+                            value={newPhotoCaption}
+                            onChange={(e) => setNewPhotoCaption(e.target.value)}
+                            placeholder="Legenda da foto..."
+                            className="w-full px-3 py-2 rounded-lg border border-stone-300 text-xs focus:outline-none focus:border-[var(--color-primary)]"
+                          />
+                        </div>
+
+                        <div className="sm:col-span-3">
+                          <select
+                            value={newPhotoCategory}
+                            onChange={(e) =>
+                              setNewPhotoCategory(e.target.value as any)
+                            }
+                            className="w-full px-3 py-2 rounded-lg border border-stone-300 text-xs focus:outline-none focus:border-[var(--color-primary)] bg-white"
+                          >
+                            <option value="momentos">Momentos & Comunhão</option>
+                            <option value="ambiente">Mesa Real & Ambiente</option>
+                            <option value="dinamica">Dinâmica & Cura</option>
+                            <option value="convite">Símbolo & Convite</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="flex justify-end">
+                        <button
+                          type="button"
+                          onClick={() => handleAddPhotoToEdition()}
+                          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-semibold bg-stone-100 hover:bg-stone-200 text-stone-800 transition-colors cursor-pointer border border-stone-200"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Adicionar Foto à Lista</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Form Action Buttons */}
+                <div className="flex items-center gap-3 pt-4">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="px-6 py-3 rounded-xl text-sm font-semibold text-white shadow-md transition-all cursor-pointer flex items-center gap-2 hover:shadow-lg disabled:opacity-50"
+                    style={{ backgroundColor: "var(--color-primary)" }}
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>
+                      {editingEditionId
+                        ? "Salvar Alterações da Edição"
+                        : "Cadastrar Nova Edição"}
+                    </span>
+                  </button>
+
+                  {editingEditionId && (
+                    <button
+                      type="button"
+                      onClick={handleCancelEditEdition}
+                      className="px-4 py-3 rounded-xl text-sm font-semibold bg-stone-100 hover:bg-stone-200 text-stone-700 transition-all cursor-pointer"
+                    >
+                      Cancelar
+                    </button>
+                  )}
+                </div>
               </form>
             </div>
 
@@ -963,43 +1414,72 @@ export default function AdminPage() {
                 Edições Registradas ({siteData?.editions?.length || 0})
               </h3>
               <div className="space-y-3">
-                {siteData?.editions?.map((ed) => (
-                  <div
-                    key={ed.id}
-                    className="p-4 rounded-2xl bg-[#faf8f5] border border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-                  >
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-serif font-bold text-base text-stone-900">
-                          {ed.number} ({ed.year}) — {ed.title}
-                        </span>
-                        <span className="text-xs px-2 py-0.5 rounded-md bg-stone-200 text-stone-700">
-                          {ed.themeColor}
-                        </span>
+                {siteData?.editions?.map((ed) => {
+                  const isBeingEdited = editingEditionId === String(ed.id);
+                  return (
+                    <div
+                      key={ed.id}
+                      className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                        isBeingEdited
+                          ? "bg-amber-50/70 border-amber-300 ring-2 ring-amber-300"
+                          : "bg-[#faf8f5] border-stone-200"
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="font-serif font-bold text-base text-stone-900">
+                            {ed.number} ({ed.year}) — {ed.title}
+                          </span>
+                          <span className="text-xs px-2 py-0.5 rounded-md bg-stone-200 text-stone-700">
+                            {ed.themeColor}
+                          </span>
+                          {ed.photos && ed.photos.length > 0 && (
+                            <span className="text-xs px-2 py-0.5 rounded-md bg-sky-100 text-sky-800">
+                              📷 {ed.photos.length} fotos
+                            </span>
+                          )}
+                          {ed.videoUrl && (
+                            <span className="text-xs px-2 py-0.5 rounded-md bg-purple-100 text-purple-800">
+                              🎥 Vídeo
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs text-stone-500 mt-0.5 font-serif italic">
+                          {ed.bibleTheme?.reference}
+                        </p>
                       </div>
-                      <p className="text-xs text-stone-500 mt-0.5 font-serif italic">
-                        {ed.bibleTheme?.reference}
-                      </p>
-                    </div>
 
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleSaveTheme(ed.themePaletteKey)}
-                        className="px-3 py-1.5 rounded-lg text-xs font-medium border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 cursor-pointer"
-                      >
-                        Ativar Cor Desta Edição
-                      </button>
+                      <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                        <button
+                          type="button"
+                          onClick={() => handleStartEditEdition(ed)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs"
+                          title="Editar informações, fotos e vídeo desta edição"
+                        >
+                          <Pencil className="w-3.5 h-3.5 text-amber-700" />
+                          <span>Editar</span>
+                        </button>
 
-                      <button
-                        onClick={() => handleDeleteEdition(String(ed.id), ed.title)}
-                        className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition-colors cursor-pointer"
-                        title="Excluir edição"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => handleSaveTheme(ed.themePaletteKey)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-medium border border-stone-300 bg-white hover:bg-stone-50 text-stone-700 cursor-pointer"
+                        >
+                          Ativar Cor Desta Edição
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteEdition(String(ed.id), ed.title)}
+                          className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition-colors cursor-pointer"
+                          title="Excluir edição"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -1008,19 +1488,48 @@ export default function AdminPage() {
         {/* TAB 3: POSTS / DEVOCIONAIS */}
         {activeTab === "posts" && (
           <div className="space-y-8">
-            <div className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-md space-y-6">
-              <div>
-                <div className="flex items-center gap-2 text-xs uppercase font-serif tracking-widest font-bold text-[var(--color-accent-gold-dark)] mb-1">
-                  <BookOpen className="w-4 h-4 text-[var(--color-accent-gold)]" />
-                  Devocional & Cartas
+            <div
+              id="post-form-section"
+              className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-md space-y-6 scroll-mt-24"
+            >
+              {editingPostId ? (
+                <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in shadow-xs">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-amber-200/80 flex items-center justify-center text-amber-900 flex-shrink-0">
+                      <Pencil className="w-5 h-5 text-amber-800" />
+                    </div>
+                    <div>
+                      <div className="font-serif font-bold text-base sm:text-lg text-amber-950">
+                        Editando Reflexão: {postForm.title}
+                      </div>
+                      <p className="text-xs text-amber-800 font-sans mt-0.5">
+                        Altere os campos abaixo e clique em Salvar Alterações para atualizar a postagem.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleCancelEditPost}
+                    className="self-start sm:self-center inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-amber-300 text-xs font-semibold text-stone-700 hover:bg-stone-50 transition-colors cursor-pointer shadow-xs flex-shrink-0"
+                  >
+                    <X className="w-3.5 h-3.5 text-stone-500" />
+                    <span>Cancelar Edição</span>
+                  </button>
                 </div>
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[var(--color-primary-deep)]">
-                  Publicar Nova Mensagem no Blog das Princesas
-                </h2>
-                <p className="text-sm text-stone-600 mt-1 font-sans">
-                  Compartilhe cartas, orações e reflexões de cura para as filhas do Rei.
-                </p>
-              </div>
+              ) : (
+                <div>
+                  <div className="flex items-center gap-2 text-xs uppercase font-serif tracking-widest font-bold text-[var(--color-accent-gold-dark)] mb-1">
+                    <BookOpen className="w-4 h-4 text-[var(--color-accent-gold)]" />
+                    Devocional & Cartas
+                  </div>
+                  <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[var(--color-primary-deep)]">
+                    Publicar Nova Mensagem no Blog das Princesas
+                  </h2>
+                  <p className="text-sm text-stone-600 mt-1 font-sans">
+                    Compartilhe cartas, orações e reflexões de cura para as filhas do Rei.
+                  </p>
+                </div>
+              )}
 
               <form onSubmit={handleCreatePost} className="space-y-5 font-sans">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1071,15 +1580,31 @@ export default function AdminPage() {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-6 py-3 rounded-xl text-sm font-semibold text-white shadow-md transition-all cursor-pointer flex items-center gap-2"
-                  style={{ backgroundColor: "var(--color-primary)" }}
-                >
-                  <Save className="w-4 h-4" />
-                  <span>Publicar Mensagem</span>
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="px-6 py-3 rounded-xl text-sm font-semibold text-white shadow-md transition-all cursor-pointer flex items-center gap-2 hover:shadow-lg disabled:opacity-50"
+                    style={{ backgroundColor: "var(--color-primary)" }}
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>
+                      {editingPostId
+                        ? "Salvar Alterações da Mensagem"
+                        : "Publicar Mensagem"}
+                    </span>
+                  </button>
+
+                  {editingPostId && (
+                    <button
+                      type="button"
+                      onClick={handleCancelEditPost}
+                      className="px-4 py-3 rounded-xl text-sm font-semibold bg-stone-100 hover:bg-stone-200 text-stone-700 transition-all cursor-pointer"
+                    >
+                      Cancelar
+                    </button>
+                  )}
+                </div>
               </form>
             </div>
 
@@ -1089,34 +1614,53 @@ export default function AdminPage() {
                 Reflexões Publicadas ({siteData?.posts?.length || 0})
               </h3>
               <div className="space-y-3">
-                {siteData?.posts?.map((post) => (
-                  <div
-                    key={post.id}
-                    className="p-4 rounded-2xl bg-[#faf8f5] border border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-                  >
-                    <div>
-                      <h4 className="font-serif font-bold text-base text-stone-900">
-                        {post.title}
-                      </h4>
-                      <p className="text-xs text-stone-500 line-clamp-1 mt-0.5">
-                        {post.excerpt}
-                      </p>
-                    </div>
+                {siteData?.posts?.map((post) => {
+                  const isBeingEdited = editingPostId === post.id;
+                  return (
+                    <div
+                      key={post.id}
+                      className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                        isBeingEdited
+                          ? "bg-amber-50/70 border-amber-300 ring-2 ring-amber-300"
+                          : "bg-[#faf8f5] border-stone-200"
+                      }`}
+                    >
+                      <div>
+                        <h4 className="font-serif font-bold text-base text-stone-900">
+                          {post.title}
+                        </h4>
+                        <p className="text-xs text-stone-500 line-clamp-1 mt-0.5">
+                          {post.excerpt}
+                        </p>
+                      </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] text-stone-400 font-mono">
-                        {post.publishedAt}
-                      </span>
-                      <button
-                        onClick={() => handleDeletePost(post.id, post.title)}
-                        className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition-colors cursor-pointer"
-                        title="Excluir postagem"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] text-stone-400 font-mono">
+                          {post.publishedAt}
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => handleStartEditPost(post)}
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-900 flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs"
+                          title="Editar esta mensagem"
+                        >
+                          <Pencil className="w-3.5 h-3.5 text-amber-700" />
+                          <span>Editar</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleDeletePost(post.id, post.title)}
+                          className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition-colors cursor-pointer"
+                          title="Excluir postagem"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>

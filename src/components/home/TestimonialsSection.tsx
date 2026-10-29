@@ -44,17 +44,17 @@ export default function TestimonialsSection() {
           <RoyalDivider variant="crown" className="my-6" />
         </div>
 
-        {/* Edition Switcher Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-12">
+        {/* Scalable Edition Switcher Tabs */}
+        <div className="flex items-center gap-2.5 sm:gap-3 overflow-x-auto no-scrollbar scroll-smooth py-2 px-1 mb-10 justify-start sm:justify-center">
           {editions.map((ed) => {
             const isSelected = Number(ed.year) === Number(activeEditionYear);
             return (
               <button
                 key={ed.id}
                 onClick={() => setActiveEditionYear(ed.year)}
-                className={`flex items-center gap-2.5 px-5 py-2.5 rounded-full text-sm font-serif font-bold transition-all cursor-pointer border ${
+                className={`flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-serif font-bold transition-all cursor-pointer border whitespace-nowrap flex-shrink-0 ${
                   isSelected
-                    ? "bg-white border-[var(--color-primary)] text-[var(--color-primary-deep)] shadow-md scale-105 ring-2 ring-[var(--color-primary)]/20"
+                    ? "bg-white border-[var(--color-primary)] text-[var(--color-primary-deep)] shadow-md scale-102 ring-2 ring-[var(--color-primary)]/20"
                     : "bg-white/70 hover:bg-white border-stone-200 text-stone-600 hover:text-stone-900 shadow-xs"
                 }`}
               >

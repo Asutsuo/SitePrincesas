@@ -92,8 +92,8 @@ export default function EditionsShowcase() {
           <RoyalDivider variant="crown" className="my-6" />
         </div>
 
-        {/* Big Clear Edition Switcher Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-12">
+        {/* Scalable Edition Switcher Tabs */}
+        <div className="flex items-center gap-2.5 sm:gap-3 overflow-x-auto no-scrollbar scroll-smooth py-2 px-1 mb-10 justify-start sm:justify-center">
           {editions.map((edition) => {
             const isSelected =
               Number(edition.year) === Number(activeEditionYear);
@@ -101,9 +101,9 @@ export default function EditionsShowcase() {
               <button
                 key={edition.id}
                 onClick={() => setActiveEditionYear(edition.year)}
-                className={`flex items-center gap-3 px-6 py-3.5 rounded-2xl transition-all duration-300 border font-serif text-base font-bold cursor-pointer ${
+                className={`flex items-center gap-2.5 sm:gap-3 px-4 sm:px-6 py-2.5 sm:py-3.5 rounded-2xl transition-all duration-300 border font-serif text-sm sm:text-base font-bold cursor-pointer whitespace-nowrap flex-shrink-0 ${
                   isSelected
-                    ? "bg-white border-[var(--color-primary)] text-[var(--color-primary-deep)] shadow-lg scale-105 ring-2 ring-[var(--color-primary)]/20"
+                    ? "bg-white border-[var(--color-primary)] text-[var(--color-primary-deep)] shadow-md scale-102 ring-2 ring-[var(--color-primary)]/20"
                     : "bg-white/70 hover:bg-white border-stone-200 text-stone-600 hover:text-stone-900 shadow-xs"
                 }`}
               >
