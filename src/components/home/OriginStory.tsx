@@ -21,12 +21,14 @@ export default function OriginStory() {
             <Sparkles className="w-3.5 h-3.5 text-[var(--color-accent-gold)]" />
             Nascido no Coração de Deus
           </div>
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[var(--color-primary-deep)] tracking-tight">
+          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[var(--color-primary-deep)] tracking-tight text-balance">
             A História do Chá das Princesas
           </h2>
-          <p className="mt-3 text-stone-600 font-serif italic text-lg">
-            Um relato de oração, obediência e cura contado por Edinea Gomes
-            Barbalho
+          <p className="mt-3 text-stone-600 font-serif italic text-base sm:text-lg text-balance">
+            Um relato de oração, obediência e cura contado por{" "}
+            <span className="whitespace-nowrap font-medium text-stone-800">
+              Edinea Gomes Barbalho
+            </span>
           </p>
           <RoyalDivider variant="crown" className="my-6" />
         </div>

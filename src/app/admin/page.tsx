@@ -18,6 +18,10 @@ import {
   Sparkles,
   SlidersHorizontal,
   LogOut,
+  Trash2,
+  Database,
+  ExternalLink,
+  HelpCircle,
 } from "lucide-react";
 import { Edition, BlogPost } from "@/lib/types";
 
@@ -29,6 +33,7 @@ export default function AdminPage() {
     setThemeKey,
     customHex,
     setCustomHex,
+    isKvConnected,
   } = useTheme();
 
   // Authentication state with persistent session
@@ -48,6 +53,7 @@ export default function AdminPage() {
     message: string;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showKvHelp, setShowKvHelp] = useState(false);
 
   // Form states for New Edition
   const [editionForm, setEditionForm] = useState<Partial<Edition>>({
@@ -118,7 +124,8 @@ export default function AdminPage() {
     e.preventDefault();
     const correctPin = siteData?.settings?.adminPin || "princesas2026";
     const trimmed = pinInput.trim();
-    if (trimmed === correctPin || trimmed === "princesas2026") {
+
+    if (trimmed === correctPin) {
       setIsAuthenticated(true);
       setActivePin(trimmed);
       setLoginError("");
@@ -127,7 +134,19 @@ export default function AdminPage() {
         localStorage.setItem("admin_session_pin", trimmed);
       } catch {}
     } else {
-      setLoginError("Código incorreto. A senha padrão é: princesas2026");
+      if (correctPin !== "princesas2026" && trimmed === "princesas2026") {
+        setLoginError(
+          "Atenção: A senha padrão inicial (princesas2026) foi alterada anteriormente pelo administrador. Por favor, insira a nova senha definida pela coordenação.",
+        );
+      } else if (correctPin !== "princesas2026") {
+        setLoginError(
+          "Senha incorreta! A senha foi personalizada pelo administrador. Se você não recorda o novo código, entre em contato com quem gerencia o painel.",
+        );
+      } else {
+        setLoginError(
+          "Código incorreto. A senha padrão inicial é: princesas2026",
+        );
+      }
     }
   };
 
@@ -142,19 +161,37 @@ export default function AdminPage() {
 
   const showToast = (type: "success" | "error", message: string) => {
     setFeedback({ type, message });
-    setTimeout(() => setFeedback(null), 5000);
+    setTimeout(() => setFeedback(null), 6000);
   };
 
   // Save official theme
   const handleSaveTheme = async (key: string, hex?: string) => {
     setIsSubmitting(true);
     try {
+      const pinToUse =
+        activePin || siteData?.settings?.adminPin || "princesas2026";
+      const chosenHex = hex || customHex;
       setThemeKey(key);
       if (hex) setCustomHex(hex);
-      showToast("success", "Cor oficial aplicada no seu navegador!");
-      await refreshData();
+
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pin: pinToUse,
+          currentThemeKey: key,
+          customColorHex: chosenHex,
+        }),
+      });
+      const data = (await res.json()) as any;
+      if (data.success) {
+        showToast("success", "Cor oficial salva e aplicada com sucesso!");
+        await refreshData();
+      } else {
+        showToast("error", data.error || "Erro ao salvar tema.");
+      }
     } catch {
-      showToast("error", "Erro ao aplicar tema.");
+      showToast("success", "Tema salvo localmente no seu navegador!");
     } finally {
       setIsSubmitting(false);
     }
@@ -186,22 +223,70 @@ export default function AdminPage() {
         status: (editionForm.status as any) || "upcoming",
         description: editionForm.description || "",
         itinerary: [],
-        rules: siteData?.editions?.[0]?.rules || [],
+        rules: [],
         photos: [],
         testimonials: [],
       };
 
-      showToast(
-        "success",
-        `Modo estático: para publicar a Edição ${editionForm.year}, crie a pasta correspondente no GitHub em src/data/editions/${editionForm.year}`,
-      );
-      setEditionForm({
-        year: (editionForm.year || 2027) + 1,
-        title: "",
-        subtitle: "",
+      const res = await fetch("/api/editions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: pinToUse, edition: newEdition }),
       });
+      const data = (await res.json()) as any;
+      if (data.success) {
+        showToast(
+          "success",
+          `Edição ${editionForm.year} cadastrada com sucesso!`,
+        );
+        await refreshData();
+        setEditionForm({
+          year: (editionForm.year || 2027) + 1,
+          title: "",
+          subtitle: "",
+        });
+      } else {
+        showToast("error", data.error || "Erro ao salvar edição.");
+      }
     } catch {
-      showToast("error", "Erro ao processar edição.");
+      showToast("error", "Erro ao conectar ao servidor.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Delete Edition
+  const handleDeleteEdition = async (editionId: string, editionTitle: string) => {
+    if (
+      !confirm(
+        `Tem certeza que deseja excluir a edição "${editionTitle}"? Esta ação removerá os dados desta edição.`,
+      )
+    ) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const pinToUse =
+        activePin || siteData?.settings?.adminPin || "princesas2026";
+      const res = await fetch("/api/editions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pin: pinToUse,
+          action: "delete",
+          editionId,
+        }),
+      });
+      const data = (await res.json()) as any;
+      if (data.success) {
+        showToast("success", `Edição "${editionTitle}" excluída com sucesso!`);
+        await refreshData();
+      } else {
+        showToast("error", data.error || "Erro ao excluir edição.");
+      }
+    } catch {
+      showToast("error", "Erro ao conectar ao servidor.");
     } finally {
       setIsSubmitting(false);
     }
@@ -245,10 +330,58 @@ export default function AdminPage() {
         tags: postForm.tags || ["Reflexão"],
       };
 
-      showToast("success", "Modo estático: posts são versionados via Git no arquivo site-data.json.");
-      setPostForm({ title: "", subtitle: "", excerpt: "", content: "" });
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pin: pinToUse, post: newPost }),
+      });
+      const data = (await res.json()) as any;
+      if (data.success) {
+        showToast("success", "Reflexão publicada no site com sucesso!");
+        await refreshData();
+        setPostForm({ title: "", subtitle: "", excerpt: "", content: "" });
+      } else {
+        showToast("error", data.error || "Erro ao publicar.");
+      }
     } catch {
-      showToast("error", "Erro ao processar reflexão.");
+      showToast("error", "Erro ao conectar ao servidor.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Delete Blog Post
+  const handleDeletePost = async (postId: string, postTitle: string) => {
+    if (
+      !confirm(
+        `Tem certeza que deseja excluir a reflexão "${postTitle}"?`,
+      )
+    ) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const pinToUse =
+        activePin || siteData?.settings?.adminPin || "princesas2026";
+      const res = await fetch("/api/posts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pin: pinToUse,
+          action: "delete",
+          postId,
+        }),
+      });
+      const data = (await res.json()) as any;
+      if (data.success) {
+        showToast("success", `Reflexão "${postTitle}" excluída com sucesso!`);
+        await refreshData();
+      } else {
+        showToast("error", data.error || "Erro ao excluir post.");
+      }
+    } catch {
+      showToast("error", "Erro ao conectar ao servidor.");
     } finally {
       setIsSubmitting(false);
     }
@@ -259,16 +392,47 @@ export default function AdminPage() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
+      const pinToUse =
+        activePin || siteData?.settings?.adminPin || "princesas2026";
+      const payload: any = {
+        pin: pinToUse,
+        contactWhatsapp: settingsForm.contactWhatsapp,
+        churchName: settingsForm.churchName,
+        churchAddress: settingsForm.churchAddress,
+        motto: settingsForm.motto,
+      };
       if (settingsForm.newPin && settingsForm.newPin.trim().length >= 4) {
-        setActivePin(settingsForm.newPin.trim());
-        try {
-          sessionStorage.setItem("admin_session_pin", settingsForm.newPin.trim());
-          localStorage.setItem("admin_session_pin", settingsForm.newPin.trim());
-        } catch {}
+        payload.adminPin = settingsForm.newPin.trim();
       }
-      showToast("success", "Configurações salvas localmente no navegador.");
+
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = (await res.json()) as any;
+      if (data.success) {
+        if (settingsForm.newPin && settingsForm.newPin.trim().length >= 4) {
+          setActivePin(settingsForm.newPin.trim());
+          try {
+            sessionStorage.setItem(
+              "admin_session_pin",
+              settingsForm.newPin.trim(),
+            );
+            localStorage.setItem(
+              "admin_session_pin",
+              settingsForm.newPin.trim(),
+            );
+          } catch {}
+          setSettingsForm((prev) => ({ ...prev, newPin: "" }));
+        }
+        showToast("success", "Configurações salvas e atualizadas com sucesso!");
+        await refreshData();
+      } else {
+        showToast("error", data.error || "Erro ao atualizar.");
+      }
     } catch {
-      showToast("error", "Erro ao salvar.");
+      showToast("error", "Erro ao conectar ao servidor.");
     } finally {
       setIsSubmitting(false);
     }
@@ -276,6 +440,10 @@ export default function AdminPage() {
 
   // Login Screen
   if (!isAuthenticated) {
+    const isCustomPin =
+      siteData?.settings?.adminPin &&
+      siteData.settings.adminPin !== "princesas2026";
+
     return (
       <main className="min-h-screen bg-[#faf8f5] flex flex-col items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-3xl p-8 border border-[var(--color-primary-border)] shadow-xl text-center">
@@ -303,37 +471,45 @@ export default function AdminPage() {
                 className="w-full px-4 py-3 rounded-xl border border-stone-300 text-stone-900 focus:outline-none focus:border-[var(--color-primary)] text-sm shadow-xs"
                 autoFocus
               />
-              <p className="text-[11px] text-stone-500 mt-1.5 font-sans">
-                Senha padrão de acesso:{" "}
-                <code className="bg-stone-100 px-1.5 py-0.5 rounded font-mono font-bold text-stone-800">
-                  princesas2026
-                </code>
+              <p className="text-[11px] text-stone-500 mt-2 font-sans">
+                {isCustomPin ? (
+                  <span className="text-amber-800 font-medium flex items-center gap-1">
+                    🔒 A senha foi alterada pela administração. Digite o novo código cadastrado.
+                  </span>
+                ) : (
+                  <>
+                    Senha padrão inicial:{" "}
+                    <code className="bg-stone-100 px-1.5 py-0.5 rounded font-mono font-bold text-stone-800">
+                      princesas2026
+                    </code>
+                  </>
+                )}
               </p>
             </div>
 
             {loginError && (
-              <div className="flex items-center gap-2 text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">
-                <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <div className="flex items-start gap-2 text-xs text-red-600 bg-red-50 p-3 rounded-xl border border-red-200">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                 <span>{loginError}</span>
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-xl text-sm font-semibold text-white shadow-md transition-all cursor-pointer"
+              className="w-full py-3.5 px-4 rounded-xl text-sm font-semibold text-white shadow-md transition-all duration-200 cursor-pointer hover:shadow-lg"
               style={{ backgroundColor: "var(--color-primary)" }}
             >
-              Entrar no Painel
+              Acessar Painel
             </button>
           </form>
 
-          <div className="mt-6 pt-4 border-t border-stone-100">
+          <div className="mt-6 pt-6 border-t border-stone-200">
             <Link
               href="/"
-              className="inline-flex items-center gap-1.5 text-xs text-stone-500 hover:text-stone-800"
+              className="inline-flex items-center gap-1.5 text-xs text-stone-500 hover:text-stone-800 font-serif italic"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Voltar ao Site Principal</span>
+              <span>Voltar para o site público</span>
             </Link>
           </div>
         </div>
@@ -341,64 +517,105 @@ export default function AdminPage() {
     );
   }
 
-  // Authenticated Dashboard
+  // Admin Dashboard
   return (
-    <main className="min-h-screen bg-[#faf8f5] text-stone-800 pb-20">
-      {/* Top Header */}
-      <header className="bg-white border-b border-stone-200 py-4 px-4 sm:px-8 shadow-xs sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <main className="min-h-screen bg-[#faf8f5] text-stone-800 pb-24">
+      {/* Top Navbar */}
+      <header className="bg-white border-b border-stone-200 sticky top-0 z-30 shadow-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               href="/"
-              className="p-2 rounded-xl text-stone-500 hover:bg-stone-100 transition-colors"
-              title="Voltar ao Site"
+              className="w-9 h-9 rounded-full bg-stone-100 flex items-center justify-center text-stone-600 hover:bg-stone-200 transition-colors"
+              title="Voltar ao site"
             >
-              <ArrowLeft className="w-5 h-5" />
+              <ArrowLeft className="w-4 h-4" />
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-serif font-bold text-lg sm:text-xl text-[var(--color-primary-deep)]">
-                  Painel de Gestão • Chá das Princesas
+                <Crown className="w-4 h-4 text-[var(--color-accent-gold)]" />
+                <h1 className="font-serif font-bold text-lg text-[var(--color-primary-deep)]">
+                  Painel de Controle Real
                 </h1>
-                <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">
-                  Conectada
-                </span>
               </div>
-              <p className="text-xs text-stone-500 font-sans">
-                Bem-vinda, Dona Edinea! Gestão direta de temas, edições e
-                mensagens.
+              <p className="text-[11px] text-stone-500 font-sans hidden sm:block">
+                Edição & Gestão — Chá das Princesas
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <Link
-              href="/"
-              target="_blank"
-              className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-[var(--color-primary-deep)] bg-[var(--color-primary-light)] border border-[var(--color-primary-border)] hover:bg-[var(--color-primary-subtle)] transition-colors font-sans"
-            >
-              Ver Site Ao Vivo
-            </Link>
+            {/* Cloudflare KV Status indicator */}
+            {isKvConnected ? (
+              <div
+                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-medium"
+                title="Cloudflare KV Ativo: dados sincronizados globalmente"
+              >
+                <Database className="w-3 h-3 text-emerald-600" />
+                <span>Nuvem Conectada (KV Ativo)</span>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowKvHelp(!showKvHelp)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-300 text-xs font-medium cursor-pointer hover:bg-amber-100 transition-colors"
+              >
+                <Database className="w-3 h-3 text-amber-600" />
+                <span>Vincular Nuvem (Cloudflare KV)</span>
+                <HelpCircle className="w-3 h-3 text-amber-700" />
+              </button>
+            )}
+
             <button
               onClick={handleLogout}
-              className="p-2 rounded-xl text-stone-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-              title="Sair do Painel"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-semibold text-stone-600 hover:text-red-700 hover:bg-red-50 transition-colors border border-stone-200"
             >
-              <LogOut className="w-4 h-4" />
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Encerrar Sessão</span>
             </button>
           </div>
         </div>
+
+        {/* Cloudflare KV Helper Banner */}
+        {showKvHelp && (
+          <div className="bg-gradient-to-r from-amber-50 via-white to-amber-50 border-b border-amber-200 px-4 py-4 text-xs text-stone-800">
+            <div className="max-w-5xl mx-auto space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-amber-900 flex items-center gap-1.5 text-sm">
+                  <Sparkles className="w-4 h-4 text-amber-600" />
+                  Como ativar o Cloudflare KV (para salvar no ar sem precisar de dev):
+                </span>
+                <button
+                  onClick={() => setShowKvHelp(false)}
+                  className="text-stone-500 hover:text-stone-800 font-bold"
+                >
+                  ✕ Fechar
+                </button>
+              </div>
+              <p className="text-stone-600 leading-relaxed">
+                O site salva todas as alterações na nuvem em tempo real quando você vincula um Namespace KV gratuito na Cloudflare:
+              </p>
+              <ol className="list-decimal list-inside space-y-1 text-stone-700 font-mono bg-white p-3 rounded-xl border border-amber-200">
+                <li>Acesse o painel Cloudflare &gt; <strong>Workers e Pages</strong> &gt; <strong>KV</strong> &gt; Clique em <strong>Criar namespace</strong> com o nome: <code className="bg-amber-100 px-1 py-0.5 rounded font-bold">PRINCESAS_KV</code></li>
+                <li>Vá no seu Worker <strong>princesas</strong> &gt; aba <strong>Configurações (Settings)</strong> &gt; <strong>Vinculações (Bindings)</strong></li>
+                <li>Clique em <strong>Adicionar</strong> &gt; <strong>Namespace KV</strong> &gt; Nome da variável: <code className="bg-amber-100 px-1 py-0.5 rounded font-bold">SITE_KV</code> &gt; Selecione o namespace <code className="bg-amber-100 px-1 py-0.5 rounded font-bold">PRINCESAS_KV</code></li>
+              </ol>
+              <p className="text-[11px] text-stone-500 italic">
+                Enquanto não vincular o KV, suas edições continuam funcionando e sendo salvas no seu navegador local via localStorage.
+              </p>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 mt-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         {/* Toast Feedback */}
         {feedback && (
           <div
-            className={`mb-6 p-4 rounded-2xl flex items-center gap-3 text-sm shadow-md border animate-in fade-in slide-in-from-top-2 ${
+            className={`mb-6 p-4 rounded-2xl flex items-center gap-3 text-sm shadow-md animate-fade-in ${
               feedback.type === "success"
-                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                : "bg-red-50 text-red-800 border-red-200"
+                ? "bg-emerald-50 text-emerald-900 border border-emerald-200"
+                : "bg-red-50 text-red-900 border border-red-200"
             }`}
           >
             {feedback.type === "success" ? (
@@ -411,173 +628,149 @@ export default function AdminPage() {
         )}
 
         {/* Tab Navigation */}
-        <div className="flex flex-wrap items-center gap-2 border-b border-stone-200 pb-3 mb-8">
+        <div className="flex flex-wrap gap-2 border-b border-stone-200 pb-4 mb-8">
           <button
             onClick={() => setActiveTab("themes")}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-serif text-sm font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-serif text-sm font-semibold transition-all cursor-pointer ${
               activeTab === "themes"
                 ? "bg-white text-[var(--color-primary-deep)] shadow-md border border-[var(--color-primary-border)]"
                 : "text-stone-600 hover:bg-white/60"
             }`}
           >
             <Palette className="w-4 h-4 text-[var(--color-accent-gold)]" />
-            <span>Cor Oficial do Tema</span>
+            <span>Cores & Temas Oficiais</span>
           </button>
 
           <button
             onClick={() => setActiveTab("editions")}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-serif text-sm font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-serif text-sm font-semibold transition-all cursor-pointer ${
               activeTab === "editions"
                 ? "bg-white text-[var(--color-primary-deep)] shadow-md border border-[var(--color-primary-border)]"
                 : "text-stone-600 hover:bg-white/60"
             }`}
           >
             <Calendar className="w-4 h-4 text-[var(--color-accent-gold)]" />
-            <span>Lançar Nova Edição</span>
+            <span>Gerenciar Edições</span>
           </button>
 
           <button
             onClick={() => setActiveTab("posts")}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-serif text-sm font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-serif text-sm font-semibold transition-all cursor-pointer ${
               activeTab === "posts"
                 ? "bg-white text-[var(--color-primary-deep)] shadow-md border border-[var(--color-primary-border)]"
                 : "text-stone-600 hover:bg-white/60"
             }`}
           >
             <BookOpen className="w-4 h-4 text-[var(--color-accent-gold)]" />
-            <span>Publicar Devocional / Reflexão</span>
+            <span>Blog & Mensagens</span>
           </button>
 
           <button
             onClick={() => setActiveTab("settings")}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-serif text-sm font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl font-serif text-sm font-semibold transition-all cursor-pointer ${
               activeTab === "settings"
                 ? "bg-white text-[var(--color-primary-deep)] shadow-md border border-[var(--color-primary-border)]"
                 : "text-stone-600 hover:bg-white/60"
             }`}
           >
             <Settings className="w-4 h-4 text-[var(--color-accent-gold)]" />
-            <span>Ajustes & WhatsApp</span>
+            <span>WhatsApp & Segurança</span>
           </button>
         </div>
 
-        {/* TAB 1: THEMES & ANNUAL COLORS */}
+        {/* TAB 1: THEMES */}
         {activeTab === "themes" && (
-          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-md space-y-8">
-            <div>
+          <div className="space-y-8">
+            <div className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-md">
               <div className="flex items-center gap-2 text-xs uppercase font-serif tracking-widest font-bold text-[var(--color-accent-gold-dark)] mb-1">
                 <Sparkles className="w-4 h-4 text-[var(--color-accent-gold)]" />
-                Personalização Visual Anual
+                Identidade Visual
               </div>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[var(--color-primary-deep)]">
-                Defina a Cor Oficial do Chá
+                Cor Oficial do Site
               </h2>
-              <p className="text-sm text-stone-600 mt-1 max-w-2xl font-sans">
-                Todo ano o evento tem uma cor especial (2025 foi Lilás, 2026 é
-                Azul Celestial). Ao escolher a cor aqui e clicar em{" "}
-                <strong>&ldquo;Definir Oficial&rdquo;</strong>, o site inteiro e
-                o fundo da logo atualizam instantaneamente.
+              <p className="text-sm text-stone-600 mt-1 mb-8 font-sans">
+                Ao selecionar ou salvar uma cor, ela se torna o padrão oficial em todo o portal para todas as visitantes.
               </p>
-            </div>
 
-            {/* Presets Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.values(PRESET_THEMES).map((theme) => {
-                const isCurrent =
-                  siteData?.settings?.currentThemeKey === theme.key;
-                const isSelectedInPreview = themeKey === theme.key;
+              {/* Presets Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                {Object.values(PRESET_THEMES).map((preset) => {
+                  const isActive = themeKey === preset.key;
+                  return (
+                    <div
+                      key={preset.key}
+                      onClick={() => handleSaveTheme(preset.key)}
+                      className={`group p-5 rounded-2xl border-2 transition-all duration-300 cursor-pointer flex items-center justify-between ${
+                        isActive
+                          ? "border-[var(--color-primary)] bg-[var(--color-primary-subtle)]/40 shadow-md scale-102"
+                          : "border-stone-200 hover:border-stone-300 bg-white hover:bg-stone-50"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="w-8 h-8 rounded-full border border-black/10 shadow-xs flex-shrink-0"
+                          style={{ backgroundColor: preset.primary }}
+                        />
+                        <div>
+                          <h4 className="font-serif font-bold text-sm text-stone-900">
+                            {preset.name}
+                          </h4>
+                          <p className="text-xs text-stone-500 font-sans">
+                            {preset.key === "blue"
+                              ? "Oficial 2026 (2ª Edição)"
+                              : preset.key === "lilac"
+                                ? "Oficial 2025 (1ª Edição)"
+                                : "Paleta Real"}
+                          </p>
+                        </div>
+                      </div>
 
-                return (
-                  <div
-                    key={theme.key}
-                    onClick={() => setThemeKey(theme.key)}
-                    className={`cursor-pointer p-5 rounded-2xl border-2 transition-all duration-300 relative ${
-                      isSelectedInPreview
-                        ? "border-[var(--color-primary)] bg-[var(--color-primary-subtle)] shadow-md"
-                        : "border-stone-200 hover:border-stone-300 bg-[#fdfcf9]"
-                    }`}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <span
-                        className="w-8 h-8 rounded-full shadow-md border-2 border-white flex items-center justify-center text-white"
-                        style={{ backgroundColor: theme.primary }}
-                      >
-                        {isSelectedInPreview && (
-                          <CheckCircle2 className="w-4 h-4" />
-                        )}
-                      </span>
-                      {isCurrent && (
-                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
-                          Cor Oficial Ativa
+                      {isActive && (
+                        <span className="text-xs font-bold text-[var(--color-primary-deep)] bg-white px-2.5 py-1 rounded-full border border-[var(--color-primary-border)] shadow-2xs">
+                          Ativo
                         </span>
                       )}
                     </div>
+                  );
+                })}
+              </div>
 
-                    <h3 className="font-serif font-bold text-lg text-stone-900">
-                      {theme.name}
-                    </h3>
-                    <p className="text-xs text-stone-500 font-sans mt-0.5">
-                      {theme.yearHint || "Paleta Harmoniosa"}
-                    </p>
+              {/* Custom Color Picker */}
+              <div className="pt-6 border-t border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h4 className="font-serif font-bold text-base text-stone-900 flex items-center gap-2">
+                    <SlidersHorizontal className="w-4 h-4 text-[var(--color-accent-gold)]" />
+                    <span>Cor Personalizada (Hexadecimal)</span>
+                  </h4>
+                  <p className="text-xs text-stone-500 font-sans mt-0.5">
+                    Escolha um tom específico da identidade visual da próxima edição.
+                  </p>
+                </div>
 
-                    <div className="mt-4 pt-3 border-t border-stone-200/60 flex items-center justify-between">
-                      <span className="text-xs text-stone-600 font-mono text-[11px]">
-                        {theme.primary}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSaveTheme(theme.key, theme.primary);
-                        }}
-                        disabled={isSubmitting}
-                        className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-white border border-stone-300 hover:bg-stone-50 text-stone-800 shadow-xs cursor-pointer"
-                      >
-                        Definir Oficial
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Custom Color Selector */}
-            <div className="p-6 rounded-2xl bg-[#fbf9f5] border border-stone-200 space-y-4">
-              <h3 className="font-serif font-bold text-lg text-[var(--color-primary-deep)] flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-[var(--color-accent-gold)]" />
-                Definir Outra Cor Personalizada
-              </h3>
-              <p className="text-xs sm:text-sm text-stone-600 font-sans">
-                Se a igreja decidir por outra tonalidade para os próximos anos,
-                escolha abaixo:
-              </p>
-
-              <div className="flex flex-wrap items-center gap-4">
-                <input
-                  type="color"
-                  value={customHex}
-                  onChange={(e) => setCustomHex(e.target.value)}
-                  className="w-12 h-12 rounded-xl border border-stone-300 cursor-pointer p-1 bg-white shadow-xs"
-                />
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-stone-500 font-sans">
-                    Código Hex:
-                  </span>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="color"
+                    value={customHex}
+                    onChange={(e) => setCustomHex(e.target.value)}
+                    className="w-10 h-10 rounded-xl cursor-pointer border border-stone-300 p-0.5"
+                  />
                   <input
                     type="text"
                     value={customHex}
                     onChange={(e) => setCustomHex(e.target.value)}
-                    className="px-3 py-2 rounded-xl border border-stone-300 font-mono text-sm w-28 bg-white"
+                    placeholder="#1d5b96"
+                    className="w-28 px-3 py-2 rounded-xl border border-stone-300 font-mono text-xs uppercase"
                   />
+                  <button
+                    onClick={() => handleSaveTheme("custom", customHex)}
+                    disabled={isSubmitting}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold text-white shadow-sm cursor-pointer"
+                    style={{ backgroundColor: "var(--color-primary)" }}
+                  >
+                    Salvar Cor
+                  </button>
                 </div>
-
-                <button
-                  onClick={() => handleSaveTheme("custom", customHex)}
-                  disabled={isSubmitting}
-                  className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white shadow-md transition-all cursor-pointer font-sans"
-                  style={{ backgroundColor: "var(--color-primary)" }}
-                >
-                  Salvar Cor Personalizada como Oficial
-                </button>
               </div>
             </div>
           </div>
@@ -592,17 +785,13 @@ export default function AdminPage() {
                 Nova Edição
               </div>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[var(--color-primary-deep)]">
-                Lançar Nova Edição do Chá das Princesas
+                Cadastrar Nova Edição do Chá das Princesas
               </h2>
               <p className="text-sm text-stone-600 mt-1 mb-8 font-sans">
-                Os dados serão salvos de forma independente na pasta
-                correspondente do projeto.
+                Adicione as edições anuais futuras com facilidade para manter o acervo do ministério sempre atualizado.
               </p>
 
-              <form
-                onSubmit={handleCreateEdition}
-                className="space-y-6 font-sans"
-              >
+              <form onSubmit={handleCreateEdition} className="space-y-6 font-sans">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
@@ -659,7 +848,7 @@ export default function AdminPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
-                      Título Central do Tema
+                      Título Real do Tema
                     </label>
                     <input
                       type="text"
@@ -670,14 +859,14 @@ export default function AdminPage() {
                           title: e.target.value,
                         })
                       }
-                      placeholder="Ex: Vasos de Honra..."
+                      placeholder="Ex: Herdeiras do Reino"
                       className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
                       required
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
-                      Subtítulo Curto
+                      Subtítulo Inspirador
                     </label>
                     <input
                       type="text"
@@ -688,7 +877,7 @@ export default function AdminPage() {
                           subtitle: e.target.value,
                         })
                       }
-                      placeholder="Ex: Curadas para o Reino"
+                      placeholder="Ex: Filhas Amadas do Rei Celestial"
                       className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   </div>
@@ -697,21 +886,22 @@ export default function AdminPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
-                      Versículo Bíblico
+                      Versículo Bíblico Oficial
                     </label>
-                    <textarea
-                      rows={2}
+                    <input
+                      type="text"
                       value={editionForm.bibleTheme?.verse || ""}
                       onChange={(e) =>
                         setEditionForm({
                           ...editionForm,
                           bibleTheme: {
                             verse: e.target.value,
-                            reference: editionForm.bibleTheme?.reference || "",
+                            reference:
+                              editionForm.bibleTheme?.reference || "",
                           },
                         })
                       }
-                      placeholder="Texto bíblico..."
+                      placeholder="Ex: Vós sois a geração eleita..."
                       className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   </div>
@@ -731,7 +921,7 @@ export default function AdminPage() {
                           },
                         })
                       }
-                      placeholder="Ex: Isaías 61:3"
+                      placeholder="Ex: 1 Pedro 2:9"
                       className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
                     />
                   </div>
@@ -739,7 +929,7 @@ export default function AdminPage() {
 
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
-                    Descrição Completa do Evento
+                    Descrição do Encontro
                   </label>
                   <textarea
                     rows={3}
@@ -770,7 +960,7 @@ export default function AdminPage() {
             {/* List Existing Editions */}
             <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-md font-sans">
               <h3 className="font-serif font-bold text-xl text-[var(--color-primary-deep)] mb-4">
-                Edições Registradas no Projeto
+                Edições Registradas ({siteData?.editions?.length || 0})
               </h3>
               <div className="space-y-3">
                 {siteData?.editions?.map((ed) => (
@@ -799,6 +989,14 @@ export default function AdminPage() {
                       >
                         Ativar Cor Desta Edição
                       </button>
+
+                      <button
+                        onClick={() => handleDeleteEdition(String(ed.id), ed.title)}
+                        className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition-colors cursor-pointer"
+                        title="Excluir edição"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -809,77 +1007,118 @@ export default function AdminPage() {
 
         {/* TAB 3: POSTS / DEVOCIONAIS */}
         {activeTab === "posts" && (
-          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-md space-y-6">
-            <div>
-              <div className="flex items-center gap-2 text-xs uppercase font-serif tracking-widest font-bold text-[var(--color-accent-gold-dark)] mb-1">
-                <BookOpen className="w-4 h-4 text-[var(--color-accent-gold)]" />
-                Devocional & Cartas
+          <div className="space-y-8">
+            <div className="bg-white rounded-3xl p-6 sm:p-10 border border-stone-200 shadow-md space-y-6">
+              <div>
+                <div className="flex items-center gap-2 text-xs uppercase font-serif tracking-widest font-bold text-[var(--color-accent-gold-dark)] mb-1">
+                  <BookOpen className="w-4 h-4 text-[var(--color-accent-gold)]" />
+                  Devocional & Cartas
+                </div>
+                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[var(--color-primary-deep)]">
+                  Publicar Nova Mensagem no Blog das Princesas
+                </h2>
+                <p className="text-sm text-stone-600 mt-1 font-sans">
+                  Compartilhe cartas, orações e reflexões de cura para as filhas do Rei.
+                </p>
               </div>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[var(--color-primary-deep)]">
-                Publicar Mensagem no Blog das Princesas
-              </h2>
-            </div>
 
-            <form onSubmit={handleCreatePost} className="space-y-5 font-sans">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <form onSubmit={handleCreatePost} className="space-y-5 font-sans">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
+                      Título da Mensagem
+                    </label>
+                    <input
+                      type="text"
+                      value={postForm.title || ""}
+                      onChange={(e) =>
+                        setPostForm({ ...postForm, title: e.target.value })
+                      }
+                      placeholder="Ex: Deixando as Pedras pelo Caminho"
+                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
+                      Subtítulo
+                    </label>
+                    <input
+                      type="text"
+                      value={postForm.subtitle || ""}
+                      onChange={(e) =>
+                        setPostForm({ ...postForm, subtitle: e.target.value })
+                      }
+                      placeholder="Ex: O alívio de quem descansa diante da cruz"
+                      className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
-                    Título da Mensagem
+                    Conteúdo Completo da Carta
                   </label>
-                  <input
-                    type="text"
-                    value={postForm.title || ""}
+                  <textarea
+                    rows={6}
+                    value={postForm.content || ""}
                     onChange={(e) =>
-                      setPostForm({ ...postForm, title: e.target.value })
+                      setPostForm({ ...postForm, content: e.target.value })
                     }
-                    placeholder="Ex: O Cuidado nos Detalhes"
-                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
+                    placeholder="Escreva a ministração aqui com carinho..."
+                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none leading-relaxed"
                     required
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
-                    Subtítulo Curto
-                  </label>
-                  <input
-                    type="text"
-                    value={postForm.subtitle || ""}
-                    onChange={(e) =>
-                      setPostForm({ ...postForm, subtitle: e.target.value })
-                    }
-                    placeholder="Ex: Uma palavra de encorajamento"
-                    className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
-                  />
-                </div>
-              </div>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-6 py-3 rounded-xl text-sm font-semibold text-white shadow-md transition-all cursor-pointer flex items-center gap-2"
+                  style={{ backgroundColor: "var(--color-primary)" }}
+                >
+                  <Save className="w-4 h-4" />
+                  <span>Publicar Mensagem</span>
+                </button>
+              </form>
+            </div>
 
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-stone-600 mb-1">
-                  Texto Completo da Mensagem
-                </label>
-                <textarea
-                  rows={8}
-                  value={postForm.content || ""}
-                  onChange={(e) =>
-                    setPostForm({ ...postForm, content: e.target.value })
-                  }
-                  placeholder="Escreva livremente aqui a sua ministração..."
-                  className="w-full px-4 py-3 rounded-xl border border-stone-300 text-sm font-serif text-base focus:border-[var(--color-primary)] focus:outline-none"
-                  required
-                />
-              </div>
+            {/* List Existing Posts */}
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-md font-sans">
+              <h3 className="font-serif font-bold text-xl text-[var(--color-primary-deep)] mb-4">
+                Reflexões Publicadas ({siteData?.posts?.length || 0})
+              </h3>
+              <div className="space-y-3">
+                {siteData?.posts?.map((post) => (
+                  <div
+                    key={post.id}
+                    className="p-4 rounded-2xl bg-[#faf8f5] border border-stone-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  >
+                    <div>
+                      <h4 className="font-serif font-bold text-base text-stone-900">
+                        {post.title}
+                      </h4>
+                      <p className="text-xs text-stone-500 line-clamp-1 mt-0.5">
+                        {post.excerpt}
+                      </p>
+                    </div>
 
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="px-6 py-3 rounded-xl text-sm font-semibold text-white shadow-md transition-all cursor-pointer flex items-center gap-2"
-                style={{ backgroundColor: "var(--color-primary)" }}
-              >
-                <Save className="w-4 h-4" />
-                <span>Publicar Mensagem</span>
-              </button>
-            </form>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-stone-400 font-mono">
+                        {post.publishedAt}
+                      </span>
+                      <button
+                        onClick={() => handleDeletePost(post.id, post.title)}
+                        className="p-1.5 rounded-lg text-stone-400 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition-colors cursor-pointer"
+                        title="Excluir postagem"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
@@ -984,6 +1223,9 @@ export default function AdminPage() {
                   placeholder="Deixe em branco para não alterar"
                   className="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:border-[var(--color-primary)] focus:outline-none"
                 />
+                <p className="text-[11px] text-stone-500 mt-1">
+                  Ao definir uma nova senha, guarde-a com segurança. O código antigo não funcionará mais.
+                </p>
               </div>
 
               <button

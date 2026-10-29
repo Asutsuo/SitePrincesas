@@ -30,9 +30,11 @@ export default function TestimonialsSection() {
             <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
             Depoimentos Reais
           </div>
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[var(--color-primary-deep)] tracking-tight">
-            Relatos das Participantes ({currentEdition?.number || "Edição"} —{" "}
-            {currentEdition?.year})
+          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[var(--color-primary-deep)] tracking-tight text-balance">
+            Relatos das Participantes{" "}
+            <span className="inline-block whitespace-nowrap">
+              ({currentEdition?.number || "Edição"} — {currentEdition?.year})
+            </span>
           </h2>
           <p className="mt-3 text-stone-600 font-serif italic text-base sm:text-lg">
             {Number(currentEdition?.year) === 2026

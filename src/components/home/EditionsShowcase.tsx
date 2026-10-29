@@ -83,10 +83,10 @@ export default function EditionsShowcase() {
             <Sparkles className="w-3.5 h-3.5 text-[var(--color-accent-gold)]" />
             Edições do Chá
           </div>
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[var(--color-primary-deep)] tracking-tight">
+          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[var(--color-primary-deep)] tracking-tight text-balance">
             Edições do Chá das Princesas
           </h2>
-          <p className="mt-3 text-stone-600 font-serif italic text-lg">
+          <p className="mt-3 text-stone-600 font-serif italic text-base sm:text-lg text-balance">
             Selecione a edição para ver a história, registros e fotos de cada encontro
           </p>
           <RoyalDivider variant="crown" className="my-6" />

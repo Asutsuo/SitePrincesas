@@ -61,8 +61,13 @@ const RULES = [
 ];
 
 export default function PrincessManual() {
-  const { openLightbox } = useTheme();
+  const { openLightbox, activeEditionYear } = useTheme();
   const [selectedRule, setSelectedRule] = useState<number>(10);
+
+  // Manual das Princesas pertence estritamente à 1ª Edição (2025)
+  if (Number(activeEditionYear) !== 2025) {
+    return null;
+  }
 
   return (
     <section

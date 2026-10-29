@@ -17,6 +17,7 @@ interface ThemeContextType {
   activeEdition: Edition | undefined;
   siteData: SiteData | null;
   isLoading: boolean;
+  isKvConnected: boolean;
   setThemeKey: (key: string) => void;
   setCustomHex: (hex: string) => void;
   setActiveEditionYear: (year: number) => void;
@@ -64,6 +65,8 @@ export function ThemeProvider({
     setLightbox((prev) => ({ ...prev, isOpen: false }));
   };
 
+  const [isKvConnected, setIsKvConnected] = useState<boolean>(false);
+
   // Keep state in sync with official server settings on mount, or check local preview
   useEffect(() => {
     try {
@@ -73,7 +76,20 @@ export function ThemeProvider({
       if (savedTheme) setThemeKeyState(savedTheme);
       if (savedCustom) setCustomHexState(savedCustom);
       if (savedYear) setActiveEditionYearState(parseInt(savedYear, 10));
+
+      const savedLocalData = localStorage.getItem("princesas_site_data");
+      if (savedLocalData) {
+        try {
+          const parsed = JSON.parse(savedLocalData);
+          if (parsed && parsed.editions) {
+            setSiteData(parsed);
+          }
+        } catch {}
+      }
     } catch {}
+
+    // Fetch latest live data from Cloudflare KV
+    refreshData();
   }, []);
 
   const activeEdition =
@@ -136,14 +152,29 @@ export function ThemeProvider({
   const refreshData = async () => {
     setIsLoading(true);
     try {
-      const savedTheme = localStorage.getItem("princesas_theme_key");
-      const savedCustom = localStorage.getItem("princesas_custom_hex");
-      const savedYear = localStorage.getItem("princesas_active_year");
-      if (savedTheme) setThemeKeyState(savedTheme);
-      if (savedCustom) setCustomHexState(savedCustom);
-      if (savedYear) setActiveEditionYearState(parseInt(savedYear, 10));
+      const res = await fetch("/api/data", { cache: "no-store" });
+      if (res.ok) {
+        const json = (await res.json()) as any;
+        if (json.success && json.data) {
+          setSiteData(json.data);
+          setIsKvConnected(Boolean(json.kvConnected));
+          try {
+            localStorage.setItem("princesas_site_data", JSON.stringify(json.data));
+          } catch {}
+
+          if (json.data.settings?.currentThemeKey) {
+            setThemeKeyState(json.data.settings.currentThemeKey);
+          }
+          if (json.data.settings?.customColorHex) {
+            setCustomHexState(json.data.settings.customColorHex);
+          }
+          if (json.data.settings?.activeEditionYear) {
+            setActiveEditionYearState(json.data.settings.activeEditionYear);
+          }
+        }
+      }
     } catch (e) {
-      console.error("Failed to refresh site data:", e);
+      console.warn("Could not fetch remote site data, using local cached data:", e);
     } finally {
       setIsLoading(false);
     }
@@ -159,6 +190,7 @@ export function ThemeProvider({
         activeEdition,
         siteData,
         isLoading,
+        isKvConnected,
         setThemeKey,
         setCustomHex,
         setActiveEditionYear,

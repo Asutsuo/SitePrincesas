@@ -14,7 +14,13 @@ import {
 } from "lucide-react";
 
 export default function ItineraryTimeline() {
-  const { activeEdition } = useTheme();
+  const { activeEdition, activeEditionYear } = useTheme();
+
+  // Os Seis Momentos Sagrados e as Dinâmicas Centrais pertencem estritamente à 1ª Edição (2025)
+  if (Number(activeEditionYear) !== 2025) {
+    return null;
+  }
+
   const itinerary = activeEdition?.itinerary || [];
 
   return (

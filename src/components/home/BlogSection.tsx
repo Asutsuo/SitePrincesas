@@ -33,10 +33,10 @@ export default function BlogSection() {
             <BookOpen className="w-3.5 h-3.5 text-[var(--color-accent-gold)]" />
             Cartas do Castelo
           </div>
-          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[var(--color-primary-deep)] tracking-tight">
+          <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[var(--color-primary-deep)] tracking-tight text-balance">
             Reflexões & Devocionais
           </h2>
-          <p className="mt-3 text-stone-600 font-serif italic text-lg">
+          <p className="mt-3 text-stone-600 font-serif italic text-base sm:text-lg text-balance">
             Mensagens inspiradas no coração de Deus para edificar sua caminhada
           </p>
           <RoyalDivider variant="crown" className="my-6" />

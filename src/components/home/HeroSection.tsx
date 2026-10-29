@@ -57,7 +57,7 @@ export default function HeroSection() {
           </p>
 
           {/* Main Title */}
-          <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[var(--color-primary-deep)] leading-[1.1] mb-6">
+          <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-[var(--color-primary-deep)] leading-[1.1] mb-6 text-balance">
             Chá das Princesas
           </h1>
 
@@ -99,15 +99,15 @@ export default function HeroSection() {
           <RoyalDivider variant="crown" className="my-6" />
 
           {/* Biblical Foundation & Purpose */}
-          <p className="font-serif text-lg sm:text-2xl text-stone-700 italic font-medium max-w-2xl leading-relaxed mb-4">
+          <p className="font-serif text-lg sm:text-2xl text-stone-700 italic font-medium max-w-2xl leading-relaxed mb-4 text-balance">
             &ldquo;Existem feridas que parecem espirituais, mas são pancadas
             emocionais silenciosas. O projeto do Rei é acolher, curar e
             restituir o seu sorriso.&rdquo;
           </p>
-          <p className="text-sm sm:text-base text-stone-600 max-w-xl leading-relaxed mb-8">
+          <p className="text-sm sm:text-base text-stone-600 max-w-xl leading-relaxed mb-8 text-balance">
             Um ambiente preparado nos mínimos detalhes por{" "}
-            <strong>Edinea Gomes Barbalho</strong>, onde cada mulher descobre
-            que é amada, preciosa e <strong>filha do Rei Jesus</strong>.
+            <strong className="whitespace-nowrap">Edinea Gomes Barbalho</strong>, onde cada mulher descobre
+            que é amada, preciosa e <strong className="whitespace-nowrap">filha do Rei Jesus</strong>.
           </p>
 
           {/* Bible Scripture Card */}
